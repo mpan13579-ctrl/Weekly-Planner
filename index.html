@@ -838,6 +838,13 @@
         </div>
       </div>
       <div class="week">
+        <article class="day" data-focus-day="1">
+          <div class="day-name"><span>Mon</span></div>
+          <span class="task-label">El Nino + Metals</span>
+          <p>Kickoff source map and table targets</p>
+          <span class="task-label">Checkpoint</span>
+          <p class="subtle">Top gaps chosen; both projects have a direction.</p>
+        </article>
         <article class="day today" data-focus-day="2">
           <div class="day-name"><span>Tue</span><span class="pill green">today</span></div>
           <span class="task-label">Hardware + El Nino</span>
@@ -900,11 +907,11 @@
       },
       1: {
         day: "Monday",
-        title: "Reset and choose the week",
-        summary: "Use Monday to clean the board and decide what matters.",
-        actions: ["Review what slipped last week.", "Choose the top 3 outcomes for this week.", "Move stale tasks into paused or later."],
-        blocks: [["30 min", "Review the board"], ["30 min", "Choose priorities"], ["15 min", "Clean small tasks"]],
-        done: ["The week has one clear main direction."]
+        title: "El Nino + metals kickoff",
+        summary: "Start both week-long projects by choosing the first source gaps and table targets.",
+        actions: ["Open the El Nino report and list the first data gaps.", "Open the metals balance notes and choose the table targets.", "Separate quick hardware tasks from the two longer research threads.", "Write the top 3 checkpoints for the week."],
+        blocks: [["35 min", "El Nino source scan"], ["35 min", "Metals table targets"], ["20 min", "Set checkpoints"]],
+        done: ["El Nino and metals both have a clean direction for the week."]
       },
       2: {
         day: "Tuesday",
@@ -1031,9 +1038,19 @@
       const canonical = "https://mpan13579-ctrl.github.io/Weekly-Planner/";
       const englishLink = document.getElementById("englishLink");
       const chineseLink = document.getElementById("chineseLink");
+      const translatedUrl = "https://translate.google.com/translate?sl=en&tl=zh-CN&u=" + encodeURIComponent(canonical);
+      const translatedContext = location.hostname.includes("translate.goog") || location.hostname.includes("translate.google") || location.href.includes("tl=zh-CN") || location.href.includes("_x_tr_tl=zh-CN");
+      const activeLang = translatedContext ? "zh" : "en";
+      document.querySelectorAll("[data-lang]").forEach((link) => {
+        link.classList.toggle("active", link.dataset.lang === activeLang);
+      });
       if (englishLink) englishLink.href = canonical;
       if (chineseLink) {
-        chineseLink.href = "https://translate.google.com/translate?sl=en&tl=zh-CN&u=" + encodeURIComponent(canonical);
+        chineseLink.href = translatedUrl;
+        chineseLink.addEventListener("click", () => {
+          document.querySelectorAll("[data-lang]").forEach((link) => link.classList.remove("active"));
+          chineseLink.classList.add("active");
+        });
       }
     }
 
