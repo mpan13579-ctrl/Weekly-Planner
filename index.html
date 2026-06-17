@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -154,6 +154,10 @@
       gap: 18px;
       align-items: stretch;
       margin-bottom: 18px;
+    }
+
+    .simple-hero {
+      grid-template-columns: 1fr;
     }
 
     .hero-copy {
@@ -581,32 +585,13 @@
       <div class="actions">
         <div class="lang-toggle" aria-label="Language selector">
           <button class="active" data-lang="en" type="button">EN</button>
-          <button data-lang="zh" type="button">简中</button>
+          <button data-lang="zh" type="button">ZH</button>
         </div>
-        <button class="btn" data-copy="#dailyPrompt">Copy daily check-in</button>
         <button class="btn primary" data-scroll="#today">Show today</button>
       </div>
     </header>
 
-    <section class="hero">
-      <div class="hero-copy">
-        <div>
-          <p class="eyebrow">Plain-English version</p>
-          <h2>Not a bigger todo list. A weekly control loop.</h2>
-          <p>
-            A spreadsheet stores tasks. An agentic planner helps decide what matters,
-            notices slippage, turns vague work into next actions, and updates the plan
-            when reality changes.
-          </p>
-        </div>
-        <div class="loop" aria-label="Agentic planning loop">
-          <div class="loop-step"><strong>Plan</strong><span>Pick outcomes, tasks, and realistic time blocks.</span></div>
-          <div class="loop-step"><strong>Execute</strong><span>Work from the smallest useful next action.</span></div>
-          <div class="loop-step"><strong>Check</strong><span>Compare plan vs. evidence and expose blockers.</span></div>
-          <div class="loop-step"><strong>Replan</strong><span>Move the week forward instead of preserving a stale list.</span></div>
-        </div>
-      </div>
-
+    <section class="hero simple-hero">
       <aside class="now-card" id="today">
         <div>
           <small>Today: Tuesday</small>
@@ -619,21 +604,6 @@
           <div class="metric"><b>90</b><span>min checkpoint</span></div>
         </div>
       </aside>
-    </section>
-
-    <section class="section" id="wechatInbox">
-      <div class="section-head">
-        <div>
-          <h2>&#x1F4E5; Inbox &mdash; auto-added from WeChat</h2>
-          <p>Messages that look like tasks appear here automatically. Delete anything that does not belong.</p>
-        </div>
-        <span class="pill blue">auto-updates</span>
-      </div>
-      <div class="card">
-        <!-- WECHAT-INBOX:START -->
-<p class="subtle" id="wechatEmpty">No items yet. With the intake engine running, WeChat messages that look like tasks will appear here automatically.</p>
-<!-- WECHAT-INBOX:END -->
-      </div>
     </section>
 
     <section class="section">
@@ -750,87 +720,6 @@
       </div>
     </section>
 
-    <section class="section">
-      <div class="section-head">
-        <div>
-          <h2>Which Agent Mode?</h2>
-          <p>Choose the behavior you want, not a fancy tool name.</p>
-        </div>
-      </div>
-      <div class="grid-3">
-        <div class="card">
-          <span class="pill green">Best default</span>
-          <h3>Chief of Staff</h3>
-          <p>Tracks the source of truth, identifies the next action, and updates status when work finishes.</p>
-        </div>
-        <div class="card">
-          <span class="pill blue">Useful daily</span>
-          <h3>Calendar Planner</h3>
-          <p>Turns the week into time blocks with buffers, instead of pretending everything fits.</p>
-        </div>
-        <div class="card">
-          <span class="pill gold">Useful weekly</span>
-          <h3>Retrospective Agent</h3>
-          <p>Looks at what slipped and rewrites the next week based on actual evidence.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-head">
-        <div>
-          <h2>Automation Path</h2>
-          <p>You can use this now manually. The bridge only matters for hands-off scheduling and tool handoffs.</p>
-        </div>
-      </div>
-      <div class="bridge">
-        <div class="bridge-step">
-          <h3>Manual now</h3>
-          <p>Open this page, copy a prompt, paste into Codex or Claude, then update the status board after work.</p>
-        </div>
-        <div class="bridge-step">
-          <h3>Agent-assisted</h3>
-          <p>Use Claude/Codex to read the files and rewrite the plan whenever your priorities change.</p>
-        </div>
-        <div class="bridge-step">
-          <h3>Automated later</h3>
-          <p>After the Codex-OpenClaw MCP bridge is done, OpenClaw can run scheduled check-ins and hand work to tools.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-head">
-        <div>
-          <h2>Copyable Prompts</h2>
-          <p>These are the parts worth pasting into an agent. Everything else is just the dashboard.</p>
-        </div>
-      </div>
-      <div class="grid-2">
-        <div class="card prompt-card">
-          <h3>Daily Check-In</h3>
-          <textarea id="dailyPrompt" readonly>Act as my weekly chief-of-staff agent. Read lp-system/STATUS.md and lp-system/agent/weekly-agentic-planner.md.
-Give me:
-1. today's top 1 deep-work task,
-2. the smallest useful next action,
-3. what is blocked or unclear,
-4. a realistic schedule with buffers,
-5. what file should be updated when I finish.
-Keep it short and in English.</textarea>
-          <button class="btn primary" data-copy="#dailyPrompt">Copy prompt</button>
-        </div>
-        <div class="card prompt-card">
-          <h3>Progress Update</h3>
-          <textarea id="progressPrompt" readonly>I worked on: [what I did]
-Evidence/artifact: [file, notes, link, or result]
-Energy left: [low/medium/high]
-Time left today: [minutes/hours]
-
-Update my weekly plan and tell me the next best action. If needed, update STATUS.md.</textarea>
-          <button class="btn primary" data-copy="#progressPrompt">Copy prompt</button>
-        </div>
-      </div>
-    </section>
   </main>
 
   <div class="toast" id="toast">Copied</div>
@@ -840,114 +729,114 @@ Update my weekly plan and tell me the next best action. If needed, update STATUS
     const originalText = new WeakMap();
     const originalInputs = new WeakMap();
     const translations = {
-      "Week of June 16, 2026": "2026年6月16日这一周",
-      "Weekly Agentic Planner": "每周智能规划台",
-      "Copy daily check-in": "复制每日检查",
-      "Show today": "查看今天",
-      "Plain-English version": "白话版",
-      "Not a bigger todo list. A weekly control loop.": "不是更长的待办清单，而是一套每周循环系统。",
-      "A spreadsheet stores tasks. An agentic planner helps decide what matters, notices slippage, turns vague work into next actions, and updates the plan when reality changes.": "表格只是存任务。智能规划会帮你判断重点、发现进度偏差、把模糊事项变成下一步行动，并在现实变化时更新计划。",
-      "Plan": "规划",
-      "Pick outcomes, tasks, and realistic time blocks.": "确定成果、任务和现实可行的时间块。",
-      "Execute": "执行",
-      "Work from the smallest useful next action.": "从最小但有用的下一步开始做。",
-      "Check": "检查",
-      "Compare plan vs. evidence and expose blockers.": "对照计划和实际证据，找出卡点。",
-      "Replan": "重排",
-      "Move the week forward instead of preserving a stale list.": "推动这一周继续前进，而不是守着过期清单。",
-      "Today: Tuesday": "今天：周二",
-      "Task 3 data source pass": "任务3数据源梳理",
-      "Smallest useful action: list the exact WASDE, rubber, rice, and historical-analog data gaps.": "最小有用行动：列出WASDE、橡胶、水稻和历史类比数据的具体缺口。",
+      "Week of June 16, 2026": "2026å¹´6æœˆ16æ—¥è¿™ä¸€å‘¨",
+      "Weekly Agentic Planner": "æ¯å‘¨æ™ºèƒ½è§„åˆ’å°",
+      "Copy daily check-in": "å¤åˆ¶æ¯æ—¥æ£€æŸ¥",
+      "Show today": "æŸ¥çœ‹ä»Šå¤©",
+      "Plain-English version": "ç™½è¯ç‰ˆ",
+      "Not a bigger todo list. A weekly control loop.": "ä¸æ˜¯æ›´é•¿çš„å¾…åŠžæ¸…å•ï¼Œè€Œæ˜¯ä¸€å¥—æ¯å‘¨å¾ªçŽ¯ç³»ç»Ÿã€‚",
+      "A spreadsheet stores tasks. An agentic planner helps decide what matters, notices slippage, turns vague work into next actions, and updates the plan when reality changes.": "è¡¨æ ¼åªæ˜¯å­˜ä»»åŠ¡ã€‚æ™ºèƒ½è§„åˆ’ä¼šå¸®ä½ åˆ¤æ–­é‡ç‚¹ã€å‘çŽ°è¿›åº¦åå·®ã€æŠŠæ¨¡ç³Šäº‹é¡¹å˜æˆä¸‹ä¸€æ­¥è¡ŒåŠ¨ï¼Œå¹¶åœ¨çŽ°å®žå˜åŒ–æ—¶æ›´æ–°è®¡åˆ’ã€‚",
+      "Plan": "è§„åˆ’",
+      "Pick outcomes, tasks, and realistic time blocks.": "ç¡®å®šæˆæžœã€ä»»åŠ¡å’ŒçŽ°å®žå¯è¡Œçš„æ—¶é—´å—ã€‚",
+      "Execute": "æ‰§è¡Œ",
+      "Work from the smallest useful next action.": "ä»Žæœ€å°ä½†æœ‰ç”¨çš„ä¸‹ä¸€æ­¥å¼€å§‹åšã€‚",
+      "Check": "æ£€æŸ¥",
+      "Compare plan vs. evidence and expose blockers.": "å¯¹ç…§è®¡åˆ’å’Œå®žé™…è¯æ®ï¼Œæ‰¾å‡ºå¡ç‚¹ã€‚",
+      "Replan": "é‡æŽ’",
+      "Move the week forward instead of preserving a stale list.": "æŽ¨åŠ¨è¿™ä¸€å‘¨ç»§ç»­å‰è¿›ï¼Œè€Œä¸æ˜¯å®ˆç€è¿‡æœŸæ¸…å•ã€‚",
+      "Today: Tuesday": "ä»Šå¤©ï¼šå‘¨äºŒ",
+      "Task 3 data source pass": "ä»»åŠ¡3æ•°æ®æºæ¢³ç†",
+      "Smallest useful action: list the exact WASDE, rubber, rice, and historical-analog data gaps.": "æœ€å°æœ‰ç”¨è¡ŒåŠ¨ï¼šåˆ—å‡ºWASDEã€æ©¡èƒ¶ã€æ°´ç¨»å’ŒåŽ†å²ç±»æ¯”æ•°æ®çš„å…·ä½“ç¼ºå£ã€‚",
       "1": "1",
-      "deep task": "深度任务",
+      "deep task": "æ·±åº¦ä»»åŠ¡",
       "2": "2",
-      "small actions": "小行动",
+      "small actions": "å°è¡ŒåŠ¨",
       "90": "90",
-      "min checkpoint": "分钟检查点",
-      "Current Project State": "当前项目状态",
-      "Based on the LP status board, compressed into what you need this week.": "基于LP状态板，压缩成这周真正需要看的内容。",
-      "Task 3: El Nino agriculture": "任务3：厄尔尼诺与农业",
-      "65% drafted": "65% 已起草",
-      "Task 1: financial AI-agent survey": "任务1：金融AI Agent调研",
-      "60% drafted": "60% 已起草",
-      "LP system build": "LP系统建设",
-      "10% scoping": "10% 范围梳理",
-      "Task 2: metals balance": "任务2：金属供需平衡",
-      "paused": "已暂停",
-      "This Week's Outcomes": "本周成果目标",
-      "Think of these as finished-state targets, not random todos.": "把它们当成完成后的状态目标，而不是零散待办。",
-      "Task 3 gets more evidence-backed": "任务3更有证据支撑",
-      "Add supply-demand tables, data gaps, and source checks for the agriculture report.": "为农业报告补充供需表、数据缺口和来源核查。",
-      "Task 1 becomes easier to defend": "任务1更容易被论证",
-      "Verify the financial AI-agent examples and clean up the category logic.": "核实金融AI Agent案例，并理顺分类逻辑。",
-      "LP design gets clearer": "LP设计更清晰",
-      "Pull concrete system principles from Task 1 after the survey is stronger.": "等调研更扎实后，从任务1提炼具体系统原则。",
-      "Week Plan": "周计划",
-      "One main deep-work target per day so the plan survives contact with real life.": "每天只放一个主要深度任务，让计划能扛住真实生活。",
-      "Tue": "周二",
-      "today": "今天",
-      "Deep work": "深度工作",
-      "Checkpoint": "检查点",
-      "You can explain exact data gaps.": "你能讲清楚具体数据缺口。",
-      "Wed": "周三",
-      "Task 3 v2 writing pass": "任务3 v2 写作",
-      "Draft has cited tables.": "草稿已有引用表格。",
-      "Thu": "周四",
-      "Task 1 verification pass": "任务1核验",
-      "Categories are defensible.": "分类逻辑站得住脚。",
-      "Fri": "周五",
-      "Task 1 v2 writing pass": "任务1 v2 写作",
-      "Survey is ready for review.": "调研稿可进入审阅。",
-      "Sat": "周六",
-      "LP design synthesis": "LP设计综合",
-      "System principles drafted.": "系统原则已起草。",
-      "Sun": "周日",
-      "Review": "复盘",
-      "Clean the board and choose next week's top three.": "整理状态板，并选出下周前三目标。",
-      "The status board is current.": "状态板已更新。",
-      "Which Agent Mode?": "选择哪种Agent模式？",
-      "Choose the behavior you want, not a fancy tool name.": "选你想要的行为，不是选花哨的工具名。",
-      "Best default": "默认首选",
-      "Chief of Staff": "参谋长",
-      "Tracks the source of truth, identifies the next action, and updates status when work finishes.": "追踪唯一事实源，指出下一步，并在完成后更新状态。",
-      "Useful daily": "适合每天用",
-      "Calendar Planner": "日程规划",
-      "Turns the week into time blocks with buffers, instead of pretending everything fits.": "把一周变成带缓冲的时间块，而不是假装所有事都能塞进去。",
-      "Useful weekly": "适合每周用",
-      "Retrospective Agent": "复盘Agent",
-      "Looks at what slipped and rewrites the next week based on actual evidence.": "查看哪些事情延误，并基于真实证据重写下周计划。",
-      "Automation Path": "自动化路径",
-      "You can use this now manually. The bridge only matters for hands-off scheduling and tool handoffs.": "现在可以手动使用。桥接只在需要自动排程和工具交接时才重要。",
-      "Manual now": "现在手动",
-      "Open this page, copy a prompt, paste into Codex or Claude, then update the status board after work.": "打开本页，复制提示词，粘贴到Codex或Claude，完成工作后更新状态板。",
-      "Agent-assisted": "Agent辅助",
-      "Use Claude/Codex to read the files and rewrite the plan whenever your priorities change.": "当优先级变化时，让Claude/Codex读取文件并重写计划。",
-      "Automated later": "之后自动化",
-      "After the Codex-OpenClaw MCP bridge is done, OpenClaw can run scheduled check-ins and hand work to tools.": "等Codex-OpenClaw MCP桥接完成后，OpenClaw可以定时检查并把工作交给工具。",
-      "Copyable Prompts": "可复制提示词",
-      "These are the parts worth pasting into an agent. Everything else is just the dashboard.": "这些才是值得粘贴给Agent的内容，其他只是仪表盘。",
-      "Daily Check-In": "每日检查",
-      "Progress Update": "进度更新",
-      "Copy prompt": "复制提示词",
-      "Copied": "已复制",
-      "Copied prompt": "已复制提示词"
+      "min checkpoint": "åˆ†é’Ÿæ£€æŸ¥ç‚¹",
+      "Current Project State": "å½“å‰é¡¹ç›®çŠ¶æ€",
+      "Based on the LP status board, compressed into what you need this week.": "åŸºäºŽLPçŠ¶æ€æ¿ï¼ŒåŽ‹ç¼©æˆè¿™å‘¨çœŸæ­£éœ€è¦çœ‹çš„å†…å®¹ã€‚",
+      "Task 3: El Nino agriculture": "ä»»åŠ¡3ï¼šåŽ„å°”å°¼è¯ºä¸Žå†œä¸š",
+      "65% drafted": "65% å·²èµ·è‰",
+      "Task 1: financial AI-agent survey": "ä»»åŠ¡1ï¼šé‡‘èžAI Agentè°ƒç ”",
+      "60% drafted": "60% å·²èµ·è‰",
+      "LP system build": "LPç³»ç»Ÿå»ºè®¾",
+      "10% scoping": "10% èŒƒå›´æ¢³ç†",
+      "Task 2: metals balance": "ä»»åŠ¡2ï¼šé‡‘å±žä¾›éœ€å¹³è¡¡",
+      "paused": "å·²æš‚åœ",
+      "This Week's Outcomes": "æœ¬å‘¨æˆæžœç›®æ ‡",
+      "Think of these as finished-state targets, not random todos.": "æŠŠå®ƒä»¬å½“æˆå®ŒæˆåŽçš„çŠ¶æ€ç›®æ ‡ï¼Œè€Œä¸æ˜¯é›¶æ•£å¾…åŠžã€‚",
+      "Task 3 gets more evidence-backed": "ä»»åŠ¡3æ›´æœ‰è¯æ®æ”¯æ’‘",
+      "Add supply-demand tables, data gaps, and source checks for the agriculture report.": "ä¸ºå†œä¸šæŠ¥å‘Šè¡¥å……ä¾›éœ€è¡¨ã€æ•°æ®ç¼ºå£å’Œæ¥æºæ ¸æŸ¥ã€‚",
+      "Task 1 becomes easier to defend": "ä»»åŠ¡1æ›´å®¹æ˜“è¢«è®ºè¯",
+      "Verify the financial AI-agent examples and clean up the category logic.": "æ ¸å®žé‡‘èžAI Agentæ¡ˆä¾‹ï¼Œå¹¶ç†é¡ºåˆ†ç±»é€»è¾‘ã€‚",
+      "LP design gets clearer": "LPè®¾è®¡æ›´æ¸…æ™°",
+      "Pull concrete system principles from Task 1 after the survey is stronger.": "ç­‰è°ƒç ”æ›´æ‰Žå®žåŽï¼Œä»Žä»»åŠ¡1æç‚¼å…·ä½“ç³»ç»ŸåŽŸåˆ™ã€‚",
+      "Week Plan": "å‘¨è®¡åˆ’",
+      "One main deep-work target per day so the plan survives contact with real life.": "æ¯å¤©åªæ”¾ä¸€ä¸ªä¸»è¦æ·±åº¦ä»»åŠ¡ï¼Œè®©è®¡åˆ’èƒ½æ‰›ä½çœŸå®žç”Ÿæ´»ã€‚",
+      "Tue": "å‘¨äºŒ",
+      "today": "ä»Šå¤©",
+      "Deep work": "æ·±åº¦å·¥ä½œ",
+      "Checkpoint": "æ£€æŸ¥ç‚¹",
+      "You can explain exact data gaps.": "ä½ èƒ½è®²æ¸…æ¥šå…·ä½“æ•°æ®ç¼ºå£ã€‚",
+      "Wed": "å‘¨ä¸‰",
+      "Task 3 v2 writing pass": "ä»»åŠ¡3 v2 å†™ä½œ",
+      "Draft has cited tables.": "è‰ç¨¿å·²æœ‰å¼•ç”¨è¡¨æ ¼ã€‚",
+      "Thu": "å‘¨å››",
+      "Task 1 verification pass": "ä»»åŠ¡1æ ¸éªŒ",
+      "Categories are defensible.": "åˆ†ç±»é€»è¾‘ç«™å¾—ä½è„šã€‚",
+      "Fri": "å‘¨äº”",
+      "Task 1 v2 writing pass": "ä»»åŠ¡1 v2 å†™ä½œ",
+      "Survey is ready for review.": "è°ƒç ”ç¨¿å¯è¿›å…¥å®¡é˜…ã€‚",
+      "Sat": "å‘¨å…­",
+      "LP design synthesis": "LPè®¾è®¡ç»¼åˆ",
+      "System principles drafted.": "ç³»ç»ŸåŽŸåˆ™å·²èµ·è‰ã€‚",
+      "Sun": "å‘¨æ—¥",
+      "Review": "å¤ç›˜",
+      "Clean the board and choose next week's top three.": "æ•´ç†çŠ¶æ€æ¿ï¼Œå¹¶é€‰å‡ºä¸‹å‘¨å‰ä¸‰ç›®æ ‡ã€‚",
+      "The status board is current.": "çŠ¶æ€æ¿å·²æ›´æ–°ã€‚",
+      "Which Agent Mode?": "é€‰æ‹©å“ªç§Agentæ¨¡å¼ï¼Ÿ",
+      "Choose the behavior you want, not a fancy tool name.": "é€‰ä½ æƒ³è¦çš„è¡Œä¸ºï¼Œä¸æ˜¯é€‰èŠ±å“¨çš„å·¥å…·åã€‚",
+      "Best default": "é»˜è®¤é¦–é€‰",
+      "Chief of Staff": "å‚è°‹é•¿",
+      "Tracks the source of truth, identifies the next action, and updates status when work finishes.": "è¿½è¸ªå”¯ä¸€äº‹å®žæºï¼ŒæŒ‡å‡ºä¸‹ä¸€æ­¥ï¼Œå¹¶åœ¨å®ŒæˆåŽæ›´æ–°çŠ¶æ€ã€‚",
+      "Useful daily": "é€‚åˆæ¯å¤©ç”¨",
+      "Calendar Planner": "æ—¥ç¨‹è§„åˆ’",
+      "Turns the week into time blocks with buffers, instead of pretending everything fits.": "æŠŠä¸€å‘¨å˜æˆå¸¦ç¼“å†²çš„æ—¶é—´å—ï¼Œè€Œä¸æ˜¯å‡è£…æ‰€æœ‰äº‹éƒ½èƒ½å¡žè¿›åŽ»ã€‚",
+      "Useful weekly": "é€‚åˆæ¯å‘¨ç”¨",
+      "Retrospective Agent": "å¤ç›˜Agent",
+      "Looks at what slipped and rewrites the next week based on actual evidence.": "æŸ¥çœ‹å“ªäº›äº‹æƒ…å»¶è¯¯ï¼Œå¹¶åŸºäºŽçœŸå®žè¯æ®é‡å†™ä¸‹å‘¨è®¡åˆ’ã€‚",
+      "Automation Path": "è‡ªåŠ¨åŒ–è·¯å¾„",
+      "You can use this now manually. The bridge only matters for hands-off scheduling and tool handoffs.": "çŽ°åœ¨å¯ä»¥æ‰‹åŠ¨ä½¿ç”¨ã€‚æ¡¥æŽ¥åªåœ¨éœ€è¦è‡ªåŠ¨æŽ’ç¨‹å’Œå·¥å…·äº¤æŽ¥æ—¶æ‰é‡è¦ã€‚",
+      "Manual now": "çŽ°åœ¨æ‰‹åŠ¨",
+      "Open this page, copy a prompt, paste into Codex or Claude, then update the status board after work.": "æ‰“å¼€æœ¬é¡µï¼Œå¤åˆ¶æç¤ºè¯ï¼Œç²˜è´´åˆ°Codexæˆ–Claudeï¼Œå®Œæˆå·¥ä½œåŽæ›´æ–°çŠ¶æ€æ¿ã€‚",
+      "Agent-assisted": "Agentè¾…åŠ©",
+      "Use Claude/Codex to read the files and rewrite the plan whenever your priorities change.": "å½“ä¼˜å…ˆçº§å˜åŒ–æ—¶ï¼Œè®©Claude/Codexè¯»å–æ–‡ä»¶å¹¶é‡å†™è®¡åˆ’ã€‚",
+      "Automated later": "ä¹‹åŽè‡ªåŠ¨åŒ–",
+      "After the Codex-OpenClaw MCP bridge is done, OpenClaw can run scheduled check-ins and hand work to tools.": "ç­‰Codex-OpenClaw MCPæ¡¥æŽ¥å®ŒæˆåŽï¼ŒOpenClawå¯ä»¥å®šæ—¶æ£€æŸ¥å¹¶æŠŠå·¥ä½œäº¤ç»™å·¥å…·ã€‚",
+      "Copyable Prompts": "å¯å¤åˆ¶æç¤ºè¯",
+      "These are the parts worth pasting into an agent. Everything else is just the dashboard.": "è¿™äº›æ‰æ˜¯å€¼å¾—ç²˜è´´ç»™Agentçš„å†…å®¹ï¼Œå…¶ä»–åªæ˜¯ä»ªè¡¨ç›˜ã€‚",
+      "Daily Check-In": "æ¯æ—¥æ£€æŸ¥",
+      "Progress Update": "è¿›åº¦æ›´æ–°",
+      "Copy prompt": "å¤åˆ¶æç¤ºè¯",
+      "Copied": "å·²å¤åˆ¶",
+      "Copied prompt": "å·²å¤åˆ¶æç¤ºè¯"
     };
 
     const zhInputs = {
-      dailyPrompt: `作为我的每周参谋长Agent。读取 lp-system/STATUS.md 和 lp-system/agent/weekly-agentic-planner.md。
-给我：
-1. 今天最重要的1个深度工作任务，
-2. 最小但有用的下一步行动，
-3. 当前有什么卡点或不清楚的地方，
-4. 一个带缓冲的现实日程，
-5. 完成后应该更新哪个文件。
-保持简短，并使用中文。`,
-      progressPrompt: `我刚刚做了：[我做了什么]
-证据/产物：[文件、笔记、链接或结果]
-剩余精力：[低/中/高]
-今天剩余时间：[分钟/小时]
+      dailyPrompt: `ä½œä¸ºæˆ‘çš„æ¯å‘¨å‚è°‹é•¿Agentã€‚è¯»å– lp-system/STATUS.md å’Œ lp-system/agent/weekly-agentic-planner.mdã€‚
+ç»™æˆ‘ï¼š
+1. ä»Šå¤©æœ€é‡è¦çš„1ä¸ªæ·±åº¦å·¥ä½œä»»åŠ¡ï¼Œ
+2. æœ€å°ä½†æœ‰ç”¨çš„ä¸‹ä¸€æ­¥è¡ŒåŠ¨ï¼Œ
+3. å½“å‰æœ‰ä»€ä¹ˆå¡ç‚¹æˆ–ä¸æ¸…æ¥šçš„åœ°æ–¹ï¼Œ
+4. ä¸€ä¸ªå¸¦ç¼“å†²çš„çŽ°å®žæ—¥ç¨‹ï¼Œ
+5. å®ŒæˆåŽåº”è¯¥æ›´æ–°å“ªä¸ªæ–‡ä»¶ã€‚
+ä¿æŒç®€çŸ­ï¼Œå¹¶ä½¿ç”¨ä¸­æ–‡ã€‚`,
+      progressPrompt: `æˆ‘åˆšåˆšåšäº†ï¼š[æˆ‘åšäº†ä»€ä¹ˆ]
+è¯æ®/äº§ç‰©ï¼š[æ–‡ä»¶ã€ç¬”è®°ã€é“¾æŽ¥æˆ–ç»“æžœ]
+å‰©ä½™ç²¾åŠ›ï¼š[ä½Ž/ä¸­/é«˜]
+ä»Šå¤©å‰©ä½™æ—¶é—´ï¼š[åˆ†é’Ÿ/å°æ—¶]
 
-请更新我的每周计划，并告诉我下一个最佳行动。如果需要，也更新 STATUS.md。`
+è¯·æ›´æ–°æˆ‘çš„æ¯å‘¨è®¡åˆ’ï¼Œå¹¶å‘Šè¯‰æˆ‘ä¸‹ä¸€ä¸ªæœ€ä½³è¡ŒåŠ¨ã€‚å¦‚æžœéœ€è¦ï¼Œä¹Ÿæ›´æ–° STATUS.mdã€‚`
     };
     let currentLang = "en";
 
@@ -1056,3 +945,4 @@ Update my weekly plan and tell me the next best action. If needed, update STATUS
   </script>
 </body>
 </html>
+
