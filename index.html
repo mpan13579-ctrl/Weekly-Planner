@@ -4,7 +4,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Weekly Agentic Planner</title>
-  <meta name="planner-build" content="1781707428">
   <style>
     :root {
       color-scheme: light;
@@ -672,9 +671,9 @@
         </div>
       </div>
       <div class="actions">
-        <div class="lang-toggle" aria-label="Language selector">
-          <button class="active" data-lang="en" type="button">EN</button>
-          <button data-lang="zh" type="button">&#31616;&#20013;</button>
+        <div class="lang-toggle notranslate" translate="no" aria-label="Language selector">
+          <button class="active notranslate" translate="no" data-lang="en" type="button">EN</button>
+          <button class="notranslate" translate="no" data-lang="zh" type="button">&#31616;&#20013;</button>
         </div>
         <button class="btn primary" data-scroll="#today">Show today</button>
       </div>
@@ -722,61 +721,22 @@
       </aside>
     </section>
 
-<!-- INTAKE:START -->
-    <section class="section" id="todayTasks">
+    <section class="section" id="taskInbox">
       <div class="section-head">
         <div>
-          <h2>&#x2705; Do Today &mdash; texted in</h2>
-          <p>Short tasks you or the group sent that should get done today. Delete anything that does not belong.</p>
-        </div>
-        <span class="pill green">auto-updates</span>
-      </div>
-      <div class="card">
-        <!-- TASKS-DAILY:START -->
-<div class="status-row" style="grid-template-columns:1fr auto auto;gap:10px;">
-  <div><strong>Message mom</strong><p class="subtle" style="margin-top:2px;">Contact mom by tomorrow &middot; from Michael &middot; 6/16/2026, 11:21:49 PM</p></div>
-  <span class="pill gold">medium</span><span class="pill blue">tomorrow</span>
-</div>
-        <!-- TASKS-DAILY:END -->
-      </div>
-    </section>
-
-    <section class="section" id="weekTasks">
-      <div class="section-head">
-        <div>
-          <h2>&#x1F5D3;&#xFE0F; This week &mdash; texted in</h2>
-          <p>Larger, multi-day tasks you sent (reports, projects, drafts).</p>
-        </div>
-        <span class="pill gold">auto-updates</span>
-      </div>
-      <div class="card">
-        <!-- TASKS-WEEKLY:START -->
-<p class="subtle">No multi-day tasks yet &mdash; longer things you text (e.g. &ldquo;finish the Task 2 metals report&rdquo;) land here.</p>
-        <!-- TASKS-WEEKLY:END -->
-      </div>
-    </section>
-
-    <section class="section" id="taskInboxInfo">
-      <div class="section-head">
-        <div>
-          <h2>&#x1F4E5; Inbox &mdash; information</h2>
-          <p>FYI / reference items you or the group sent. Not tasks &mdash; just things worth keeping in view.</p>
+          <h2>&#x1F4E5; Inbox &mdash; auto-added from Telegram</h2>
+          <p>Text a task to your Telegram bot and it appears here automatically. Delete anything that does not belong.</p>
         </div>
         <span class="pill blue">auto-updates</span>
       </div>
       <div class="card">
-        <!-- INBOX-INFO:START -->
-<div class="status-row" style="grid-template-columns:1fr auto;gap:10px;">
-  <div><strong>Infrastructure group messages overwhelming</strong><p class="subtle" style="margin-top:2px;">Gene reports the infrastructure group chat has too many messages to keep up with. May need to adjust notification settings or request message consolidation. &middot; from Gene · LP任务 &middot; 6/17/2026, 12:08:09 AM</p></div>
-  <span class="pill blue">info</span>
-</div>
-        <!-- INBOX-INFO:END -->
+        <!-- WECHAT-INBOX:START -->
+        <p class="subtle" id="taskInboxEmpty">No items yet - text a task to your Telegram bot and it shows up here automatically.</p>
+        <!-- WECHAT-INBOX:END -->
       </div>
     </section>
-<!-- INTAKE:END -->
 
-
-<section class="section">
+    <section class="section">
       <div class="section-head">
         <div>
           <h2>Current Project State</h2>
@@ -898,6 +858,8 @@
   <script>
     const toast = document.querySelector("#toast");
     let currentLang = "en";
+    let translateRetry = null;
+    let translateRequestedAt = 0;
     const dayDetails = {
       0: {
         day: "Sunday",
@@ -1012,7 +974,7 @@
         }
       });
 
-      requestPageTranslation(currentLang);
+      if (currentLang === "zh") queuePageTranslation("zh");
     }
 
     function showToast(message) {
@@ -1037,21 +999,50 @@
       document.body.removeChild(scratch);
     }
 
+    function setLanguageButtons(lang) {
+      document.querySelectorAll("[data-lang]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.lang === lang);
+      });
+    }
+
+    function clearGoogleTranslateCookie() {
+      const expired = "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+      document.cookie = "googtrans" + expired;
+      document.cookie = "googtrans" + expired + "; domain=.github.io";
+      document.cookie = "googtrans" + expired + "; domain=.mpan13579-ctrl.github.io";
+    }
+
     function getTranslateSelect() {
       return document.querySelector(".goog-te-combo");
+    }
+
+    function queuePageTranslation(lang) {
+      if (translateRetry) window.clearTimeout(translateRetry);
+      translateRetry = window.setTimeout(() => requestPageTranslation(lang), 250);
     }
 
     function requestPageTranslation(lang) {
       currentLang = lang;
       document.documentElement.lang = lang === "zh" ? "zh-Hans" : "en";
-      document.querySelectorAll("[data-lang]").forEach((button) => {
-        button.classList.toggle("active", button.dataset.lang === lang);
-      });
+      setLanguageButtons(lang);
       try { localStorage.setItem("plannerLanguage", lang); } catch (e) {}
 
+      if (lang === "en") {
+        clearGoogleTranslateCookie();
+        const alreadyEnglish = !document.documentElement.className.includes("translated") && !document.body.className.includes("translated");
+        if (!alreadyEnglish) window.location.reload();
+        return;
+      }
+
       const select = getTranslateSelect();
-      if (!select) return;
-      const target = lang === "zh" ? "zh-CN" : "en";
+      if (!select) {
+        const now = Date.now();
+        if (now - translateRequestedAt < 8000) {
+          translateRetry = window.setTimeout(() => requestPageTranslation(lang), 600);
+        }
+        return;
+      }
+      const target = "zh-CN";
       if (select.value === target) return;
       select.value = target;
       select.dispatchEvent(new Event("change"));
@@ -1063,7 +1054,8 @@
         includedLanguages: "en,zh-CN",
         autoDisplay: false
       }, "google_translate_element");
-      window.setTimeout(() => requestPageTranslation(currentLang), 500);
+      translateRequestedAt = Date.now();
+      queuePageTranslation(currentLang);
     };
 
     document.querySelectorAll("[data-copy]").forEach((button) => {
@@ -1083,7 +1075,10 @@
     });
 
     document.querySelectorAll("[data-lang]").forEach((button) => {
-      button.addEventListener("click", () => requestPageTranslation(button.dataset.lang));
+      button.addEventListener("click", () => {
+        translateRequestedAt = Date.now();
+        queuePageTranslation(button.dataset.lang);
+      });
     });
 
     document.querySelectorAll("[data-focus-day]").forEach((card) => {
@@ -1093,8 +1088,9 @@
     try {
       currentLang = localStorage.getItem("plannerLanguage") || "en";
       selectedFocusDay = dayDetails[selectedFocusDay] ? selectedFocusDay : 2;
+      translateRequestedAt = Date.now();
       renderFocusDay(selectedFocusDay);
-      requestPageTranslation(currentLang);
+      queuePageTranslation(currentLang);
     } catch (e) {
       currentLang = "en";
       renderFocusDay(2);
@@ -1107,14 +1103,13 @@
         if (y !== null) { window.scrollTo(0, parseInt(y, 10) || 0); sessionStorage.removeItem("plannerScrollY"); }
       } catch (e) {}
       setInterval(function () {
-        if (document.hidden) return;
+        if (document.hidden || currentLang === "zh") return;
         try { sessionStorage.setItem("plannerScrollY", String(window.scrollY)); } catch (e) {}
         location.reload();
-      }, 60000);
+      }, currentLang === "zh" ? 600000 : 180000);
     })();
   </script>
   <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
-
 
