@@ -710,22 +710,58 @@
       </aside>
     </section>
 
-    <section class="section" id="taskInbox">
+<!-- INTAKE:START -->
+    <section class="section" id="todayTasks">
       <div class="section-head">
         <div>
-          <h2>&#x1F4E5; Inbox &mdash; auto-added from Telegram</h2>
-          <p>Text a task to your Telegram bot and it appears here automatically. Delete anything that does not belong.</p>
+          <h2>&#x2705; Do Today &mdash; texted in</h2>
+          <p>Short tasks you or the group sent that should get done today. Delete anything that does not belong.</p>
+        </div>
+        <span class="pill green">auto-updates</span>
+      </div>
+      <div class="card">
+        <!-- TASKS-DAILY:START -->
+<div class="status-row" style="grid-template-columns:1fr auto auto;gap:10px;">
+  <div><strong>Message mom</strong><p class="subtle" style="margin-top:2px;">Contact mom by tomorrow &middot; from Michael &middot; 6/16/2026, 11:21:49 PM</p></div>
+  <span class="pill gold">medium</span><span class="pill blue">tomorrow</span>
+</div>
+        <!-- TASKS-DAILY:END -->
+      </div>
+    </section>
+
+    <section class="section" id="weekTasks">
+      <div class="section-head">
+        <div>
+          <h2>&#x1F5D3;&#xFE0F; This week &mdash; texted in</h2>
+          <p>Larger, multi-day tasks you sent (reports, projects, drafts).</p>
+        </div>
+        <span class="pill gold">auto-updates</span>
+      </div>
+      <div class="card">
+        <!-- TASKS-WEEKLY:START -->
+<p class="subtle">No multi-day tasks yet &mdash; longer things you text (e.g. &ldquo;finish the Task 2 metals report&rdquo;) land here.</p>
+        <!-- TASKS-WEEKLY:END -->
+      </div>
+    </section>
+
+    <section class="section" id="taskInboxInfo">
+      <div class="section-head">
+        <div>
+          <h2>&#x1F4E5; Inbox &mdash; information</h2>
+          <p>FYI / reference items you or the group sent. Not tasks &mdash; just things worth keeping in view.</p>
         </div>
         <span class="pill blue">auto-updates</span>
       </div>
       <div class="card">
-        <!-- WECHAT-INBOX:START -->
-        <p class="subtle" id="taskInboxEmpty">No items yet - text a task to your Telegram bot and it shows up here automatically.</p>
-        <!-- WECHAT-INBOX:END -->
+        <!-- INBOX-INFO:START -->
+<p class="subtle">Nothing here yet &mdash; non-task messages (updates, FYIs) will collect here.</p>
+        <!-- INBOX-INFO:END -->
       </div>
     </section>
+<!-- INTAKE:END -->
 
-    <section class="section">
+
+<section class="section">
       <div class="section-head">
         <div>
           <h2>Current Project State</h2>
