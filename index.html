@@ -709,21 +709,36 @@
       </aside>
     </section>
 
-    <section class="section" id="taskInbox">
+    <section class="section" id="todayTasks">
       <div class="section-head">
         <div>
-          <h2>&#x1F4E5; Inbox &mdash; auto-added from Telegram</h2>
-          <p>Text a task to your Telegram bot and it appears here automatically. Delete anything that does not belong.</p>
+          <h2>&#x2705; Do Today &mdash; texted in</h2>
+          <p>Short tasks you (or the group) sent that should get done today. Delete anything that does not belong.</p>
         </div>
-        <span class="pill blue">auto-updates</span>
+        <span class="pill green">auto-updates</span>
       </div>
       <div class="card">
-        <!-- WECHAT-INBOX:START -->
+        <!-- TASKS-DAILY:START -->
 <div class="status-row" style="grid-template-columns:1fr auto auto;gap:10px;">
   <div><strong>Message mom</strong><p class="subtle" style="margin-top:2px;">Contact mom by tomorrow &middot; from Michael &middot; 6/16/2026, 11:21:49 PM</p></div>
   <span class="pill gold">medium</span><span class="pill blue">tomorrow</span>
 </div>
-<!-- WECHAT-INBOX:END -->
+<!-- TASKS-DAILY:END -->
+      </div>
+    </section>
+
+    <section class="section" id="taskInbox">
+      <div class="section-head">
+        <div>
+          <h2>&#x1F4E5; Inbox &mdash; information</h2>
+          <p>FYI / reference items you or the group sent. Not tasks &mdash; just things worth keeping in view.</p>
+        </div>
+        <span class="pill blue">auto-updates</span>
+      </div>
+      <div class="card">
+        <!-- INBOX-INFO:START -->
+<p class="subtle" id="infoEmpty">Nothing here yet &mdash; non-task messages (updates, FYIs) will collect here.</p>
+<!-- INBOX-INFO:END -->
       </div>
     </section>
 
@@ -794,6 +809,12 @@
           <h2>Week Plan</h2>
           <p>One main deep-work target per day so the plan survives contact with real life.</p>
         </div>
+      </div>
+      <div class="card" style="margin-bottom:14px;">
+        <h3>&#x1F5D3;&#xFE0F; Texted in &mdash; this week</h3>
+        <!-- TASKS-WEEKLY:START -->
+<p class="subtle" id="weeklyEmpty">No multi-day tasks yet &mdash; longer things you text (e.g. &ldquo;finish the Task 2 metals report&rdquo;) land here.</p>
+<!-- TASKS-WEEKLY:END -->
       </div>
       <div class="week">
         <article class="day today" data-focus-day="2">
