@@ -134,7 +134,7 @@
       box-shadow: 0 8px 24px rgba(23, 32, 38, 0.06);
     }
 
-    .lang-toggle button {
+    .lang-toggle :is(button, a) {
       border: 0;
       border-radius: 6px;
       background: transparent;
@@ -142,23 +142,16 @@
       cursor: pointer;
       min-height: 32px;
       padding: 6px 10px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
     }
 
-    .lang-toggle button.active {
+    .lang-toggle :is(button, a).active {
       background: var(--ink);
       color: white;
     }
 
-    #google_translate_element,
-    .goog-te-banner-frame,
-    .goog-te-gadget,
-    .skiptranslate iframe {
-      display: none !important;
-    }
-
-    body {
-      top: 0 !important;
-    }
 
     .hero {
       display: grid;
@@ -673,8 +666,8 @@
       </div>
       <div class="actions">
         <div class="lang-toggle notranslate" translate="no" aria-label="Language selector">
-          <button class="active notranslate" translate="no" data-lang="en" type="button">EN</button>
-          <button class="notranslate" translate="no" data-lang="zh" type="button">&#31616;&#20013;</button>
+          <a class="active notranslate" translate="no" data-lang="en" id="englishLink" href="https://mpan13579-ctrl.github.io/Weekly-Planner/" target="_top">EN</a>
+          <a class="notranslate" translate="no" data-lang="zh" id="chineseLink" href="https://translate.google.com/translate?sl=en&tl=zh-CN&u=https%3A%2F%2Fmpan13579-ctrl.github.io%2FWeekly-Planner%2F" target="_top">&#31616;&#20013;</a>
         </div>
         <button class="btn primary" data-scroll="#today">Show today</button>
       </div>
@@ -893,13 +886,9 @@
   </main>
 
   <div class="toast" id="toast">Copied</div>
-  <div id="google_translate_element" aria-hidden="true"></div>
 
   <script>
     const toast = document.querySelector("#toast");
-    let currentLang = "en";
-    let translateRetry = null;
-    let translateRequestedAt = 0;
     const dayDetails = {
       0: {
         day: "Sunday",
@@ -1014,7 +1003,6 @@
         }
       });
 
-      if (currentLang === "zh") queuePageTranslation("zh");
     }
 
     function showToast(message) {
@@ -1039,64 +1027,15 @@
       document.body.removeChild(scratch);
     }
 
-    function setLanguageButtons(lang) {
-      document.querySelectorAll("[data-lang]").forEach((button) => {
-        button.classList.toggle("active", button.dataset.lang === lang);
-      });
-    }
-
-    function clearGoogleTranslateCookie() {
-      const expired = "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
-      document.cookie = "googtrans" + expired;
-      document.cookie = "googtrans" + expired + "; domain=.github.io";
-      document.cookie = "googtrans" + expired + "; domain=.mpan13579-ctrl.github.io";
-    }
-
-    function getTranslateSelect() {
-      return document.querySelector(".goog-te-combo");
-    }
-
-    function queuePageTranslation(lang) {
-      if (translateRetry) window.clearTimeout(translateRetry);
-      translateRetry = window.setTimeout(() => requestPageTranslation(lang), 250);
-    }
-
-    function requestPageTranslation(lang) {
-      currentLang = lang;
-      document.documentElement.lang = lang === "zh" ? "zh-Hans" : "en";
-      setLanguageButtons(lang);
-      try { localStorage.setItem("plannerLanguage", lang); } catch (e) {}
-
-      if (lang === "en") {
-        clearGoogleTranslateCookie();
-        const alreadyEnglish = !document.documentElement.className.includes("translated") && !document.body.className.includes("translated");
-        if (!alreadyEnglish) window.location.reload();
-        return;
+    function configureLanguageLinks() {
+      const canonical = "https://mpan13579-ctrl.github.io/Weekly-Planner/";
+      const englishLink = document.getElementById("englishLink");
+      const chineseLink = document.getElementById("chineseLink");
+      if (englishLink) englishLink.href = canonical;
+      if (chineseLink) {
+        chineseLink.href = "https://translate.google.com/translate?sl=en&tl=zh-CN&u=" + encodeURIComponent(canonical);
       }
-
-      const select = getTranslateSelect();
-      if (!select) {
-        const now = Date.now();
-        if (now - translateRequestedAt < 8000) {
-          translateRetry = window.setTimeout(() => requestPageTranslation(lang), 600);
-        }
-        return;
-      }
-      const target = "zh-CN";
-      if (select.value === target) return;
-      select.value = target;
-      select.dispatchEvent(new Event("change"));
     }
-
-    window.googleTranslateElementInit = function () {
-      new google.translate.TranslateElement({
-        pageLanguage: "en",
-        includedLanguages: "en,zh-CN",
-        autoDisplay: false
-      }, "google_translate_element");
-      translateRequestedAt = Date.now();
-      queuePageTranslation(currentLang);
-    };
 
     document.querySelectorAll("[data-copy]").forEach((button) => {
       button.addEventListener("click", async () => {
@@ -1114,25 +1053,16 @@
       });
     });
 
-    document.querySelectorAll("[data-lang]").forEach((button) => {
-      button.addEventListener("click", () => {
-        translateRequestedAt = Date.now();
-        queuePageTranslation(button.dataset.lang);
-      });
-    });
 
     document.querySelectorAll("[data-focus-day]").forEach((card) => {
       card.addEventListener("click", () => renderFocusDay(Number(card.dataset.focusDay)));
     });
 
     try {
-      currentLang = localStorage.getItem("plannerLanguage") || "en";
       selectedFocusDay = dayDetails[selectedFocusDay] ? selectedFocusDay : 2;
-      translateRequestedAt = Date.now();
+      configureLanguageLinks();
       renderFocusDay(selectedFocusDay);
-      queuePageTranslation(currentLang);
     } catch (e) {
-      currentLang = "en";
       renderFocusDay(2);
     }
 
@@ -1143,13 +1073,12 @@
         if (y !== null) { window.scrollTo(0, parseInt(y, 10) || 0); sessionStorage.removeItem("plannerScrollY"); }
       } catch (e) {}
       setInterval(function () {
-        if (document.hidden || currentLang === "zh") return;
+        if (document.hidden) return;
         try { sessionStorage.setItem("plannerScrollY", String(window.scrollY)); } catch (e) {}
         location.reload();
-      }, currentLang === "zh" ? 600000 : 180000);
+      }, 180000);
     })();
   </script>
-  <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
 
