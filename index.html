@@ -1,0 +1,866 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Weekly Agentic Planner</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172026;
+      --muted: #5f6d75;
+      --line: #d9e0e3;
+      --paper: #f7f8f4;
+      --panel: #ffffff;
+      --green: #1d6b53;
+      --green-soft: #dff0e9;
+      --gold: #9a6b10;
+      --gold-soft: #f5e6bd;
+      --blue: #275d8f;
+      --blue-soft: #dceaf6;
+      --red: #9d3f34;
+      --red-soft: #f2d9d5;
+      --shadow: 0 18px 60px rgba(23, 32, 38, 0.10);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background:
+        linear-gradient(135deg, rgba(223, 240, 233, 0.70), transparent 34%),
+        linear-gradient(315deg, rgba(245, 230, 189, 0.72), transparent 32%),
+        var(--paper);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.45;
+    }
+
+    button, input, textarea {
+      font: inherit;
+    }
+
+    .shell {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 44px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .mark {
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(23, 32, 38, 0.14);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: var(--panel);
+      box-shadow: 0 8px 24px rgba(23, 32, 38, 0.08);
+      flex: 0 0 auto;
+      font-weight: 800;
+      color: var(--green);
+      letter-spacing: 0;
+    }
+
+    h1, h2, h3, p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: clamp(26px, 4vw, 44px);
+      line-height: 1.03;
+      letter-spacing: 0;
+    }
+
+    .eyebrow {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 3px;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .btn {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      color: var(--ink);
+      padding: 10px 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 40px;
+      box-shadow: 0 8px 24px rgba(23, 32, 38, 0.06);
+    }
+
+    .btn.primary {
+      background: var(--green);
+      border-color: var(--green);
+      color: white;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+      align-items: stretch;
+      margin-bottom: 18px;
+    }
+
+    .hero-copy {
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.76);
+      border: 1px solid rgba(23, 32, 38, 0.10);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      min-height: 300px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .hero-copy p {
+      color: var(--muted);
+      max-width: 66ch;
+      font-size: 17px;
+    }
+
+    .loop {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .loop-step {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      min-height: 96px;
+    }
+
+    .loop-step strong {
+      display: block;
+      margin-bottom: 7px;
+    }
+
+    .loop-step span {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .now-card {
+      background: var(--ink);
+      color: white;
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 300px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .now-card::after {
+      content: "";
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      transform: rotate(20deg);
+      right: -90px;
+      top: -82px;
+    }
+
+    .now-card small {
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 13px;
+    }
+
+    .now-card h2 {
+      margin-top: 8px;
+      font-size: 28px;
+      line-height: 1.08;
+      letter-spacing: 0;
+      max-width: 360px;
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 22px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .metric {
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 8px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .metric b {
+      display: block;
+      font-size: 22px;
+    }
+
+    .metric span {
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 12px;
+    }
+
+    .section {
+      margin-top: 20px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    .section-head h2 {
+      font-size: 22px;
+      letter-spacing: 0;
+    }
+
+    .section-head p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      box-shadow: 0 12px 30px rgba(23, 32, 38, 0.06);
+    }
+
+    .card h3 {
+      font-size: 17px;
+      margin-bottom: 8px;
+      letter-spacing: 0;
+    }
+
+    .card p, .card li {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .outcome-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .outcome {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+      align-items: start;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fbfcfa;
+    }
+
+    .outcome-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: var(--green-soft);
+      color: var(--green);
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    .outcome strong {
+      display: block;
+      margin-bottom: 3px;
+      font-size: 14px;
+    }
+
+    .outcome p {
+      font-size: 13px;
+    }
+
+    .status-row {
+      display: grid;
+      grid-template-columns: 1.1fr 0.55fr 0.55fr;
+      gap: 8px;
+      align-items: center;
+      padding: 12px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .status-row:first-of-type {
+      border-top: 0;
+      padding-top: 2px;
+    }
+
+    .status-row strong {
+      font-size: 14px;
+    }
+
+    .bar {
+      height: 9px;
+      background: #eef2f1;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .fill {
+      height: 100%;
+      border-radius: inherit;
+      background: var(--green);
+    }
+
+    .pill {
+      border-radius: 999px;
+      padding: 5px 9px;
+      font-size: 12px;
+      width: fit-content;
+      white-space: nowrap;
+    }
+
+    .pill.green { background: var(--green-soft); color: var(--green); }
+    .pill.gold { background: var(--gold-soft); color: var(--gold); }
+    .pill.blue { background: var(--blue-soft); color: var(--blue); }
+    .pill.red { background: var(--red-soft); color: var(--red); }
+
+    .week {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .day {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      min-height: 190px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .day.today {
+      border-color: var(--green);
+      box-shadow: 0 12px 32px rgba(29, 107, 83, 0.12);
+    }
+
+    .day-name {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-weight: 800;
+    }
+
+    .task-label {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .day p {
+      color: var(--ink);
+      font-size: 14px;
+    }
+
+    .subtle {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .prompt-card {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 158px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fbfcfa;
+      color: var(--ink);
+    }
+
+    .bridge {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      counter-reset: bridge;
+    }
+
+    .bridge-step {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      padding: 16px;
+      min-height: 144px;
+      position: relative;
+    }
+
+    .bridge-step::before {
+      counter-increment: bridge;
+      content: counter(bridge);
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      background: var(--blue-soft);
+      color: var(--blue);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      background: var(--ink);
+      color: white;
+      padding: 11px 13px;
+      border-radius: 8px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: 160ms ease;
+      pointer-events: none;
+      box-shadow: var(--shadow);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 980px) {
+      .hero,
+      .grid-3,
+      .grid-2,
+      .bridge {
+        grid-template-columns: 1fr;
+      }
+
+      .loop {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .week {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .shell {
+        width: min(100% - 22px, 1180px);
+        padding-top: 16px;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .actions {
+        width: 100%;
+        justify-content: stretch;
+      }
+
+      .btn {
+        justify-content: center;
+        flex: 1 1 160px;
+      }
+
+      .hero-copy,
+      .now-card {
+        padding: 20px;
+      }
+
+      .loop,
+      .week,
+      .mini-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .status-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="mark">LP</div>
+        <div>
+          <p class="eyebrow">Week of June 16, 2026</p>
+          <h1>Weekly Agentic Planner</h1>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn" data-copy="#dailyPrompt">Copy daily check-in</button>
+        <button class="btn primary" data-scroll="#today">Show today</button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-copy">
+        <div>
+          <p class="eyebrow">Plain-English version</p>
+          <h2>Not a bigger todo list. A weekly control loop.</h2>
+          <p>
+            A spreadsheet stores tasks. An agentic planner helps decide what matters,
+            notices slippage, turns vague work into next actions, and updates the plan
+            when reality changes.
+          </p>
+        </div>
+        <div class="loop" aria-label="Agentic planning loop">
+          <div class="loop-step"><strong>Plan</strong><span>Pick outcomes, tasks, and realistic time blocks.</span></div>
+          <div class="loop-step"><strong>Execute</strong><span>Work from the smallest useful next action.</span></div>
+          <div class="loop-step"><strong>Check</strong><span>Compare plan vs. evidence and expose blockers.</span></div>
+          <div class="loop-step"><strong>Replan</strong><span>Move the week forward instead of preserving a stale list.</span></div>
+        </div>
+      </div>
+
+      <aside class="now-card" id="today">
+        <div>
+          <small>Today: Tuesday</small>
+          <h2>Task 3 data source pass</h2>
+          <p class="subtle">Smallest useful action: list the exact WASDE, rubber, rice, and historical-analog data gaps.</p>
+        </div>
+        <div class="mini-grid">
+          <div class="metric"><b>1</b><span>deep task</span></div>
+          <div class="metric"><b>2</b><span>small actions</span></div>
+          <div class="metric"><b>90</b><span>min checkpoint</span></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section" id="wechatInbox">
+      <div class="section-head">
+        <div>
+          <h2>&#x1F4E5; Inbox &mdash; auto-added from WeChat</h2>
+          <p>Messages that look like tasks appear here automatically. Delete anything that does not belong.</p>
+        </div>
+        <span class="pill blue">auto-updates</span>
+      </div>
+      <div class="card">
+        <!-- WECHAT-INBOX:START -->
+<p class="subtle" id="wechatEmpty">No items yet. With the intake engine running, WeChat messages that look like tasks will appear here automatically.</p>
+<!-- WECHAT-INBOX:END -->
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Current Project State</h2>
+          <p>Based on the LP status board, compressed into what you need this week.</p>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="status-row">
+            <strong>Task 3: El Nino agriculture</strong>
+            <div class="bar" aria-label="65 percent complete"><div class="fill" style="width:65%"></div></div>
+            <span class="pill green">65% drafted</span>
+          </div>
+          <div class="status-row">
+            <strong>Task 1: financial AI-agent survey</strong>
+            <div class="bar" aria-label="60 percent complete"><div class="fill" style="width:60%"></div></div>
+            <span class="pill blue">60% drafted</span>
+          </div>
+          <div class="status-row">
+            <strong>LP system build</strong>
+            <div class="bar" aria-label="10 percent complete"><div class="fill" style="width:10%"></div></div>
+            <span class="pill gold">10% scoping</span>
+          </div>
+          <div class="status-row">
+            <strong>Task 2: metals balance</strong>
+            <div class="bar" aria-label="0 percent complete"><div class="fill" style="width:0%"></div></div>
+            <span class="pill red">paused</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>This Week's Outcomes</h3>
+          <p>Think of these as finished-state targets, not random todos.</p>
+          <div class="outcome-list">
+            <div class="outcome">
+              <span class="outcome-num">1</span>
+              <div>
+                <strong>Task 3 gets more evidence-backed</strong>
+                <p>Add supply-demand tables, data gaps, and source checks for the agriculture report.</p>
+              </div>
+            </div>
+            <div class="outcome">
+              <span class="outcome-num">2</span>
+              <div>
+                <strong>Task 1 becomes easier to defend</strong>
+                <p>Verify the financial AI-agent examples and clean up the category logic.</p>
+              </div>
+            </div>
+            <div class="outcome">
+              <span class="outcome-num">3</span>
+              <div>
+                <strong>LP design gets clearer</strong>
+                <p>Pull concrete system principles from Task 1 after the survey is stronger.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Week Plan</h2>
+          <p>One main deep-work target per day so the plan survives contact with real life.</p>
+        </div>
+      </div>
+      <div class="week">
+        <article class="day today">
+          <div class="day-name"><span>Tue</span><span class="pill green">today</span></div>
+          <span class="task-label">Deep work</span>
+          <p>Task 3 data source pass</p>
+          <span class="task-label">Checkpoint</span>
+          <p class="subtle">You can explain exact data gaps.</p>
+        </article>
+        <article class="day">
+          <div class="day-name"><span>Wed</span></div>
+          <span class="task-label">Deep work</span>
+          <p>Task 3 v2 writing pass</p>
+          <span class="task-label">Checkpoint</span>
+          <p class="subtle">Draft has cited tables.</p>
+        </article>
+        <article class="day">
+          <div class="day-name"><span>Thu</span></div>
+          <span class="task-label">Deep work</span>
+          <p>Task 1 verification pass</p>
+          <span class="task-label">Checkpoint</span>
+          <p class="subtle">Categories are defensible.</p>
+        </article>
+        <article class="day">
+          <div class="day-name"><span>Fri</span></div>
+          <span class="task-label">Deep work</span>
+          <p>Task 1 v2 writing pass</p>
+          <span class="task-label">Checkpoint</span>
+          <p class="subtle">Survey is ready for review.</p>
+        </article>
+        <article class="day">
+          <div class="day-name"><span>Sat</span></div>
+          <span class="task-label">Deep work</span>
+          <p>LP design synthesis</p>
+          <span class="task-label">Checkpoint</span>
+          <p class="subtle">System principles drafted.</p>
+        </article>
+        <article class="day">
+          <div class="day-name"><span>Sun</span></div>
+          <span class="task-label">Review</span>
+          <p>Clean the board and choose next week's top three.</p>
+          <span class="task-label">Checkpoint</span>
+          <p class="subtle">The status board is current.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Which Agent Mode?</h2>
+          <p>Choose the behavior you want, not a fancy tool name.</p>
+        </div>
+      </div>
+      <div class="grid-3">
+        <div class="card">
+          <span class="pill green">Best default</span>
+          <h3>Chief of Staff</h3>
+          <p>Tracks the source of truth, identifies the next action, and updates status when work finishes.</p>
+        </div>
+        <div class="card">
+          <span class="pill blue">Useful daily</span>
+          <h3>Calendar Planner</h3>
+          <p>Turns the week into time blocks with buffers, instead of pretending everything fits.</p>
+        </div>
+        <div class="card">
+          <span class="pill gold">Useful weekly</span>
+          <h3>Retrospective Agent</h3>
+          <p>Looks at what slipped and rewrites the next week based on actual evidence.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Automation Path</h2>
+          <p>You can use this now manually. The bridge only matters for hands-off scheduling and tool handoffs.</p>
+        </div>
+      </div>
+      <div class="bridge">
+        <div class="bridge-step">
+          <h3>Manual now</h3>
+          <p>Open this page, copy a prompt, paste into Codex or Claude, then update the status board after work.</p>
+        </div>
+        <div class="bridge-step">
+          <h3>Agent-assisted</h3>
+          <p>Use Claude/Codex to read the files and rewrite the plan whenever your priorities change.</p>
+        </div>
+        <div class="bridge-step">
+          <h3>Automated later</h3>
+          <p>After the Codex-OpenClaw MCP bridge is done, OpenClaw can run scheduled check-ins and hand work to tools.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Copyable Prompts</h2>
+          <p>These are the parts worth pasting into an agent. Everything else is just the dashboard.</p>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card prompt-card">
+          <h3>Daily Check-In</h3>
+          <textarea id="dailyPrompt" readonly>Act as my weekly chief-of-staff agent. Read lp-system/STATUS.md and lp-system/agent/weekly-agentic-planner.md.
+Give me:
+1. today's top 1 deep-work task,
+2. the smallest useful next action,
+3. what is blocked or unclear,
+4. a realistic schedule with buffers,
+5. what file should be updated when I finish.
+Keep it short and in English.</textarea>
+          <button class="btn primary" data-copy="#dailyPrompt">Copy prompt</button>
+        </div>
+        <div class="card prompt-card">
+          <h3>Progress Update</h3>
+          <textarea id="progressPrompt" readonly>I worked on: [what I did]
+Evidence/artifact: [file, notes, link, or result]
+Energy left: [low/medium/high]
+Time left today: [minutes/hours]
+
+Update my weekly plan and tell me the next best action. If needed, update STATUS.md.</textarea>
+          <button class="btn primary" data-copy="#progressPrompt">Copy prompt</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast">Copied</div>
+
+  <script>
+    const toast = document.querySelector("#toast");
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      window.setTimeout(() => toast.classList.remove("show"), 1400);
+    }
+
+    async function copyText(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        return;
+      }
+
+      const scratch = document.createElement("textarea");
+      scratch.value = text;
+      scratch.setAttribute("readonly", "");
+      scratch.style.position = "fixed";
+      scratch.style.left = "-999px";
+      document.body.appendChild(scratch);
+      scratch.select();
+      document.execCommand("copy");
+      document.body.removeChild(scratch);
+    }
+
+    document.querySelectorAll("[data-copy]").forEach((button) => {
+      button.addEventListener("click", async () => {
+        const target = document.querySelector(button.dataset.copy);
+        if (!target) return;
+        await copyText(target.value || target.textContent);
+        showToast("Copied prompt");
+      });
+    });
+
+    document.querySelectorAll("[data-scroll]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const target = document.querySelector(button.dataset.scroll);
+        if (target) target.scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+    });
+
+    // Auto-refresh so newly auto-added WeChat tasks appear. Preserves scroll; pauses when the tab is hidden.
+    (function () {
+      try {
+        const y = sessionStorage.getItem("plannerScrollY");
+        if (y !== null) { window.scrollTo(0, parseInt(y, 10) || 0); sessionStorage.removeItem("plannerScrollY"); }
+      } catch (e) {}
+      setInterval(function () {
+        if (document.hidden) return;
+        try { sessionStorage.setItem("plannerScrollY", String(window.scrollY)); } catch (e) {}
+        location.reload();
+      }, 60000);
+    })();
+  </script>
+</body>
+</html>
