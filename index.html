@@ -662,7 +662,7 @@
       <div class="actions">
         <div class="lang-toggle" aria-label="Language selector">
           <button class="active" data-lang="en" type="button">EN</button>
-          <button data-lang="zh" type="button">ZH</button>
+          <button data-lang="zh" type="button">&#31616;&#20013;</button>
         </div>
         <button class="btn primary" data-scroll="#today">Show today</button>
       </div>
@@ -713,13 +713,13 @@
       <div class="section-head">
         <div>
           <h2>&#x1F4E5; Inbox &mdash; auto-added from Telegram</h2>
-          <p>Text a task to your Telegram bot and it appears here within about a minute. Delete anything that does not belong.</p>
+          <p>Text a task to your Telegram bot and it appears here automatically. Delete anything that does not belong.</p>
         </div>
         <span class="pill blue">auto-updates</span>
       </div>
       <div class="card">
         <!-- WECHAT-INBOX:START -->
-        <p class="subtle" id="taskInboxEmpty">No items yet &mdash; text a task to your Telegram bot and it shows up here automatically.</p>
+        <p class="subtle" id="taskInboxEmpty">No items yet - text a task to your Telegram bot and it shows up here automatically.</p>
         <!-- WECHAT-INBOX:END -->
       </div>
     </section>
@@ -847,115 +847,63 @@
     const originalText = new WeakMap();
     const originalInputs = new WeakMap();
     const translations = {
-      "Week of June 16, 2026": "2026å¹´6æœˆ16æ—¥è¿™ä¸€å‘¨",
-      "Weekly Agentic Planner": "æ¯å‘¨æ™ºèƒ½è§„åˆ’å°",
-      "Copy daily check-in": "å¤åˆ¶æ¯æ—¥æ£€æŸ¥",
-      "Show today": "æŸ¥çœ‹ä»Šå¤©",
-      "Plain-English version": "ç™½è¯ç‰ˆ",
-      "Not a bigger todo list. A weekly control loop.": "ä¸æ˜¯æ›´é•¿çš„å¾…åŠžæ¸…å•ï¼Œè€Œæ˜¯ä¸€å¥—æ¯å‘¨å¾ªçŽ¯ç³»ç»Ÿã€‚",
-      "A spreadsheet stores tasks. An agentic planner helps decide what matters, notices slippage, turns vague work into next actions, and updates the plan when reality changes.": "è¡¨æ ¼åªæ˜¯å­˜ä»»åŠ¡ã€‚æ™ºèƒ½è§„åˆ’ä¼šå¸®ä½ åˆ¤æ–­é‡ç‚¹ã€å‘çŽ°è¿›åº¦åå·®ã€æŠŠæ¨¡ç³Šäº‹é¡¹å˜æˆä¸‹ä¸€æ­¥è¡ŒåŠ¨ï¼Œå¹¶åœ¨çŽ°å®žå˜åŒ–æ—¶æ›´æ–°è®¡åˆ’ã€‚",
-      "Plan": "è§„åˆ’",
-      "Pick outcomes, tasks, and realistic time blocks.": "ç¡®å®šæˆæžœã€ä»»åŠ¡å’ŒçŽ°å®žå¯è¡Œçš„æ—¶é—´å—ã€‚",
-      "Execute": "æ‰§è¡Œ",
-      "Work from the smallest useful next action.": "ä»Žæœ€å°ä½†æœ‰ç”¨çš„ä¸‹ä¸€æ­¥å¼€å§‹åšã€‚",
-      "Check": "æ£€æŸ¥",
-      "Compare plan vs. evidence and expose blockers.": "å¯¹ç…§è®¡åˆ’å’Œå®žé™…è¯æ®ï¼Œæ‰¾å‡ºå¡ç‚¹ã€‚",
-      "Replan": "é‡æŽ’",
-      "Move the week forward instead of preserving a stale list.": "æŽ¨åŠ¨è¿™ä¸€å‘¨ç»§ç»­å‰è¿›ï¼Œè€Œä¸æ˜¯å®ˆç€è¿‡æœŸæ¸…å•ã€‚",
-      "Today: Tuesday": "ä»Šå¤©ï¼šå‘¨äºŒ",
-      "Task 3 data source pass": "ä»»åŠ¡3æ•°æ®æºæ¢³ç†",
-      "Smallest useful action: list the exact WASDE, rubber, rice, and historical-analog data gaps.": "æœ€å°æœ‰ç”¨è¡ŒåŠ¨ï¼šåˆ—å‡ºWASDEã€æ©¡èƒ¶ã€æ°´ç¨»å’ŒåŽ†å²ç±»æ¯”æ•°æ®çš„å…·ä½“ç¼ºå£ã€‚",
-      "1": "1",
-      "deep task": "æ·±åº¦ä»»åŠ¡",
-      "2": "2",
-      "small actions": "å°è¡ŒåŠ¨",
-      "90": "90",
-      "min checkpoint": "åˆ†é’Ÿæ£€æŸ¥ç‚¹",
-      "Current Project State": "å½“å‰é¡¹ç›®çŠ¶æ€",
-      "Based on the LP status board, compressed into what you need this week.": "åŸºäºŽLPçŠ¶æ€æ¿ï¼ŒåŽ‹ç¼©æˆè¿™å‘¨çœŸæ­£éœ€è¦çœ‹çš„å†…å®¹ã€‚",
-      "Task 3: El Nino agriculture": "ä»»åŠ¡3ï¼šåŽ„å°”å°¼è¯ºä¸Žå†œä¸š",
-      "65% drafted": "65% å·²èµ·è‰",
-      "Task 1: financial AI-agent survey": "ä»»åŠ¡1ï¼šé‡‘èžAI Agentè°ƒç ”",
-      "60% drafted": "60% å·²èµ·è‰",
-      "LP system build": "LPç³»ç»Ÿå»ºè®¾",
-      "10% scoping": "10% èŒƒå›´æ¢³ç†",
-      "Task 2: metals balance": "ä»»åŠ¡2ï¼šé‡‘å±žä¾›éœ€å¹³è¡¡",
-      "paused": "å·²æš‚åœ",
-      "This Week's Outcomes": "æœ¬å‘¨æˆæžœç›®æ ‡",
-      "Think of these as finished-state targets, not random todos.": "æŠŠå®ƒä»¬å½“æˆå®ŒæˆåŽçš„çŠ¶æ€ç›®æ ‡ï¼Œè€Œä¸æ˜¯é›¶æ•£å¾…åŠžã€‚",
-      "Task 3 gets more evidence-backed": "ä»»åŠ¡3æ›´æœ‰è¯æ®æ”¯æ’‘",
-      "Add supply-demand tables, data gaps, and source checks for the agriculture report.": "ä¸ºå†œä¸šæŠ¥å‘Šè¡¥å……ä¾›éœ€è¡¨ã€æ•°æ®ç¼ºå£å’Œæ¥æºæ ¸æŸ¥ã€‚",
-      "Task 1 becomes easier to defend": "ä»»åŠ¡1æ›´å®¹æ˜“è¢«è®ºè¯",
-      "Verify the financial AI-agent examples and clean up the category logic.": "æ ¸å®žé‡‘èžAI Agentæ¡ˆä¾‹ï¼Œå¹¶ç†é¡ºåˆ†ç±»é€»è¾‘ã€‚",
-      "LP design gets clearer": "LPè®¾è®¡æ›´æ¸…æ™°",
-      "Pull concrete system principles from Task 1 after the survey is stronger.": "ç­‰è°ƒç ”æ›´æ‰Žå®žåŽï¼Œä»Žä»»åŠ¡1æç‚¼å…·ä½“ç³»ç»ŸåŽŸåˆ™ã€‚",
-      "Week Plan": "å‘¨è®¡åˆ’",
-      "One main deep-work target per day so the plan survives contact with real life.": "æ¯å¤©åªæ”¾ä¸€ä¸ªä¸»è¦æ·±åº¦ä»»åŠ¡ï¼Œè®©è®¡åˆ’èƒ½æ‰›ä½çœŸå®žç”Ÿæ´»ã€‚",
-      "Tue": "å‘¨äºŒ",
-      "today": "ä»Šå¤©",
-      "Deep work": "æ·±åº¦å·¥ä½œ",
-      "Checkpoint": "æ£€æŸ¥ç‚¹",
-      "You can explain exact data gaps.": "ä½ èƒ½è®²æ¸…æ¥šå…·ä½“æ•°æ®ç¼ºå£ã€‚",
-      "Wed": "å‘¨ä¸‰",
-      "Task 3 v2 writing pass": "ä»»åŠ¡3 v2 å†™ä½œ",
-      "Draft has cited tables.": "è‰ç¨¿å·²æœ‰å¼•ç”¨è¡¨æ ¼ã€‚",
-      "Thu": "å‘¨å››",
-      "Task 1 verification pass": "ä»»åŠ¡1æ ¸éªŒ",
-      "Categories are defensible.": "åˆ†ç±»é€»è¾‘ç«™å¾—ä½è„šã€‚",
-      "Fri": "å‘¨äº”",
-      "Task 1 v2 writing pass": "ä»»åŠ¡1 v2 å†™ä½œ",
-      "Survey is ready for review.": "è°ƒç ”ç¨¿å¯è¿›å…¥å®¡é˜…ã€‚",
-      "Sat": "å‘¨å…­",
-      "LP design synthesis": "LPè®¾è®¡ç»¼åˆ",
-      "System principles drafted.": "ç³»ç»ŸåŽŸåˆ™å·²èµ·è‰ã€‚",
-      "Sun": "å‘¨æ—¥",
-      "Review": "å¤ç›˜",
-      "Clean the board and choose next week's top three.": "æ•´ç†çŠ¶æ€æ¿ï¼Œå¹¶é€‰å‡ºä¸‹å‘¨å‰ä¸‰ç›®æ ‡ã€‚",
-      "The status board is current.": "çŠ¶æ€æ¿å·²æ›´æ–°ã€‚",
-      "Which Agent Mode?": "é€‰æ‹©å“ªç§Agentæ¨¡å¼ï¼Ÿ",
-      "Choose the behavior you want, not a fancy tool name.": "é€‰ä½ æƒ³è¦çš„è¡Œä¸ºï¼Œä¸æ˜¯é€‰èŠ±å“¨çš„å·¥å…·åã€‚",
-      "Best default": "é»˜è®¤é¦–é€‰",
-      "Chief of Staff": "å‚è°‹é•¿",
-      "Tracks the source of truth, identifies the next action, and updates status when work finishes.": "è¿½è¸ªå”¯ä¸€äº‹å®žæºï¼ŒæŒ‡å‡ºä¸‹ä¸€æ­¥ï¼Œå¹¶åœ¨å®ŒæˆåŽæ›´æ–°çŠ¶æ€ã€‚",
-      "Useful daily": "é€‚åˆæ¯å¤©ç”¨",
-      "Calendar Planner": "æ—¥ç¨‹è§„åˆ’",
-      "Turns the week into time blocks with buffers, instead of pretending everything fits.": "æŠŠä¸€å‘¨å˜æˆå¸¦ç¼“å†²çš„æ—¶é—´å—ï¼Œè€Œä¸æ˜¯å‡è£…æ‰€æœ‰äº‹éƒ½èƒ½å¡žè¿›åŽ»ã€‚",
-      "Useful weekly": "é€‚åˆæ¯å‘¨ç”¨",
-      "Retrospective Agent": "å¤ç›˜Agent",
-      "Looks at what slipped and rewrites the next week based on actual evidence.": "æŸ¥çœ‹å“ªäº›äº‹æƒ…å»¶è¯¯ï¼Œå¹¶åŸºäºŽçœŸå®žè¯æ®é‡å†™ä¸‹å‘¨è®¡åˆ’ã€‚",
-      "Automation Path": "è‡ªåŠ¨åŒ–è·¯å¾„",
-      "You can use this now manually. The bridge only matters for hands-off scheduling and tool handoffs.": "çŽ°åœ¨å¯ä»¥æ‰‹åŠ¨ä½¿ç”¨ã€‚æ¡¥æŽ¥åªåœ¨éœ€è¦è‡ªåŠ¨æŽ’ç¨‹å’Œå·¥å…·äº¤æŽ¥æ—¶æ‰é‡è¦ã€‚",
-      "Manual now": "çŽ°åœ¨æ‰‹åŠ¨",
-      "Open this page, copy a prompt, paste into Codex or Claude, then update the status board after work.": "æ‰“å¼€æœ¬é¡µï¼Œå¤åˆ¶æç¤ºè¯ï¼Œç²˜è´´åˆ°Codexæˆ–Claudeï¼Œå®Œæˆå·¥ä½œåŽæ›´æ–°çŠ¶æ€æ¿ã€‚",
-      "Agent-assisted": "Agentè¾…åŠ©",
-      "Use Claude/Codex to read the files and rewrite the plan whenever your priorities change.": "å½“ä¼˜å…ˆçº§å˜åŒ–æ—¶ï¼Œè®©Claude/Codexè¯»å–æ–‡ä»¶å¹¶é‡å†™è®¡åˆ’ã€‚",
-      "Automated later": "ä¹‹åŽè‡ªåŠ¨åŒ–",
-      "After the Codex-OpenClaw MCP bridge is done, OpenClaw can run scheduled check-ins and hand work to tools.": "ç­‰Codex-OpenClaw MCPæ¡¥æŽ¥å®ŒæˆåŽï¼ŒOpenClawå¯ä»¥å®šæ—¶æ£€æŸ¥å¹¶æŠŠå·¥ä½œäº¤ç»™å·¥å…·ã€‚",
-      "Copyable Prompts": "å¯å¤åˆ¶æç¤ºè¯",
-      "These are the parts worth pasting into an agent. Everything else is just the dashboard.": "è¿™äº›æ‰æ˜¯å€¼å¾—ç²˜è´´ç»™Agentçš„å†…å®¹ï¼Œå…¶ä»–åªæ˜¯ä»ªè¡¨ç›˜ã€‚",
-      "Daily Check-In": "æ¯æ—¥æ£€æŸ¥",
-      "Progress Update": "è¿›åº¦æ›´æ–°",
-      "Copy prompt": "å¤åˆ¶æç¤ºè¯",
-      "Copied": "å·²å¤åˆ¶",
-      "Copied prompt": "å·²å¤åˆ¶æç¤ºè¯"
+      "Week of June 16, 2026": "2026\u5e746\u670816\u65e5\u8fd9\u4e00\u5468",
+      "Weekly Agentic Planner": "\u6bcf\u5468\u667a\u80fd\u89c4\u5212\u53f0",
+      "Show today": "\u67e5\u770b\u4eca\u5929",
+      "Today: Tuesday": "\u4eca\u5929\uff1a\u5468\u4e8c",
+      "Task 3 data source pass": "\u4efb\u52a13\u6570\u636e\u6e90\u68b3\u7406",
+      "Smallest useful action: list the exact WASDE, rubber, rice, and historical-analog data gaps.": "\u6700\u5c0f\u6709\u7528\u884c\u52a8\uff1a\u5217\u51faWASDE\u3001\u6a61\u80f6\u3001\u6c34\u7a3b\u548c\u5386\u53f2\u7c7b\u6bd4\u6570\u636e\u7684\u5177\u4f53\u7f3a\u53e3\u3002",
+      "deep task": "\u6df1\u5ea6\u4efb\u52a1",
+      "next actions": "\u4e0b\u4e00\u6b65",
+      "min checkpoint": "\u5206\u949f\u68c0\u67e5\u70b9",
+      "Do Today": "\u4eca\u5929\u8981\u505a",
+      "Suggested Blocks": "\u5efa\u8bae\u65f6\u95f4\u5757",
+      "Done When": "\u5b8c\u6210\u6807\u51c6",
+      "Current Project State": "\u5f53\u524d\u9879\u76ee\u72b6\u6001",
+      "Based on the LP status board, compressed into what you need this week.": "\u57fa\u4e8eLP\u72b6\u6001\u677f\uff0c\u538b\u7f29\u6210\u8fd9\u5468\u771f\u6b63\u9700\u8981\u770b\u7684\u5185\u5bb9\u3002",
+      "Task 3: El Nino agriculture": "\u4efb\u52a13\uff1a\u5384\u5c14\u5c3c\u8bfa\u4e0e\u519c\u4e1a",
+      "65% drafted": "65% \u5df2\u8d77\u8349",
+      "Task 1: financial AI-agent survey": "\u4efb\u52a11\uff1a\u91d1\u878dAI Agent\u8c03\u7814",
+      "60% drafted": "60% \u5df2\u8d77\u8349",
+      "LP system build": "LP\u7cfb\u7edf\u5efa\u8bbe",
+      "10% scoping": "10% \u8303\u56f4\u68b3\u7406",
+      "Task 2: metals balance": "\u4efb\u52a12\uff1a\u91d1\u5c5e\u4f9b\u9700\u5e73\u8861",
+      "paused": "\u5df2\u6682\u505c",
+      "This Week's Outcomes": "\u672c\u5468\u6210\u679c\u76ee\u6807",
+      "Think of these as finished-state targets, not random todos.": "\u628a\u5b83\u4eec\u5f53\u6210\u5b8c\u6210\u540e\u7684\u72b6\u6001\u76ee\u6807\uff0c\u800c\u4e0d\u662f\u96f6\u6563\u5f85\u529e\u3002",
+      "Task 3 gets more evidence-backed": "\u4efb\u52a13\u66f4\u6709\u8bc1\u636e\u652f\u6491",
+      "Add supply-demand tables, data gaps, and source checks for the agriculture report.": "\u4e3a\u519c\u4e1a\u62a5\u544a\u8865\u5145\u4f9b\u9700\u8868\u3001\u6570\u636e\u7f3a\u53e3\u548c\u6765\u6e90\u6838\u67e5\u3002",
+      "Task 1 becomes easier to defend": "\u4efb\u52a11\u66f4\u5bb9\u6613\u88ab\u8bba\u8bc1",
+      "Verify the financial AI-agent examples and clean up the category logic.": "\u6838\u5b9e\u91d1\u878dAI Agent\u6848\u4f8b\uff0c\u5e76\u7406\u987a\u5206\u7c7b\u903b\u8f91\u3002",
+      "LP design gets clearer": "LP\u8bbe\u8ba1\u66f4\u6e05\u6670",
+      "Pull concrete system principles from Task 1 after the survey is stronger.": "\u7b49\u8c03\u7814\u66f4\u624e\u5b9e\u540e\uff0c\u4ece\u4efb\u52a11\u63d0\u70bc\u5177\u4f53\u7cfb\u7edf\u539f\u5219\u3002",
+      "Week Plan": "\u5468\u8ba1\u5212",
+      "One main deep-work target per day so the plan survives contact with real life.": "\u6bcf\u5929\u53ea\u653e\u4e00\u4e2a\u4e3b\u8981\u6df1\u5ea6\u4efb\u52a1\uff0c\u8ba9\u8ba1\u5212\u80fd\u625b\u4f4f\u771f\u5b9e\u751f\u6d3b\u3002",
+      "Tue": "\u5468\u4e8c",
+      "today": "\u4eca\u5929",
+      "Deep work": "\u6df1\u5ea6\u5de5\u4f5c",
+      "Checkpoint": "\u68c0\u67e5\u70b9",
+      "You can explain exact data gaps.": "\u4f60\u80fd\u8bb2\u6e05\u695a\u5177\u4f53\u6570\u636e\u7f3a\u53e3\u3002",
+      "Wed": "\u5468\u4e09",
+      "Task 3 v2 writing pass": "\u4efb\u52a13 v2 \u5199\u4f5c",
+      "Draft has cited tables.": "\u8349\u7a3f\u5df2\u6709\u5f15\u7528\u8868\u683c\u3002",
+      "Thu": "\u5468\u56db",
+      "Task 1 verification pass": "\u4efb\u52a11\u6838\u9a8c",
+      "Categories are defensible.": "\u5206\u7c7b\u903b\u8f91\u7ad9\u5f97\u4f4f\u811a\u3002",
+      "Fri": "\u5468\u4e94",
+      "Task 1 v2 writing pass": "\u4efb\u52a11 v2 \u5199\u4f5c",
+      "Survey is ready for review.": "\u8c03\u7814\u7a3f\u53ef\u8fdb\u5165\u5ba1\u9605\u3002",
+      "Sat": "\u5468\u516d",
+      "LP design synthesis": "LP\u8bbe\u8ba1\u7efc\u5408",
+      "System principles drafted.": "\u7cfb\u7edf\u539f\u5219\u5df2\u8d77\u8349\u3002",
+      "Sun": "\u5468\u65e5",
+      "Review": "\u590d\u76d8",
+      "Clean the board and choose next week's top three.": "\u6574\u7406\u72b6\u6001\u677f\uff0c\u5e76\u9009\u51fa\u4e0b\u5468\u524d\u4e09\u76ee\u6807\u3002",
+      "The status board is current.": "\u72b6\u6001\u677f\u5df2\u66f4\u65b0\u3002",
+      "Copied": "\u5df2\u590d\u5236",
+      "Copied prompt": "\u5df2\u590d\u5236\u63d0\u793a\u8bcd"
     };
 
-    const zhInputs = {
-      dailyPrompt: `ä½œä¸ºæˆ‘çš„æ¯å‘¨å‚è°‹é•¿Agentã€‚è¯»å– lp-system/STATUS.md å’Œ lp-system/agent/weekly-agentic-planner.mdã€‚
-ç»™æˆ‘ï¼š
-1. ä»Šå¤©æœ€é‡è¦çš„1ä¸ªæ·±åº¦å·¥ä½œä»»åŠ¡ï¼Œ
-2. æœ€å°ä½†æœ‰ç”¨çš„ä¸‹ä¸€æ­¥è¡ŒåŠ¨ï¼Œ
-3. å½“å‰æœ‰ä»€ä¹ˆå¡ç‚¹æˆ–ä¸æ¸…æ¥šçš„åœ°æ–¹ï¼Œ
-4. ä¸€ä¸ªå¸¦ç¼“å†²çš„çŽ°å®žæ—¥ç¨‹ï¼Œ
-5. å®ŒæˆåŽåº”è¯¥æ›´æ–°å“ªä¸ªæ–‡ä»¶ã€‚
-ä¿æŒç®€çŸ­ï¼Œå¹¶ä½¿ç”¨ä¸­æ–‡ã€‚`,
-      progressPrompt: `æˆ‘åˆšåˆšåšäº†ï¼š[æˆ‘åšäº†ä»€ä¹ˆ]
-è¯æ®/äº§ç‰©ï¼š[æ–‡ä»¶ã€ç¬”è®°ã€é“¾æŽ¥æˆ–ç»“æžœ]
-å‰©ä½™ç²¾åŠ›ï¼š[ä½Ž/ä¸­/é«˜]
-ä»Šå¤©å‰©ä½™æ—¶é—´ï¼š[åˆ†é’Ÿ/å°æ—¶]
-
-è¯·æ›´æ–°æˆ‘çš„æ¯å‘¨è®¡åˆ’ï¼Œå¹¶å‘Šè¯‰æˆ‘ä¸‹ä¸€ä¸ªæœ€ä½³è¡ŒåŠ¨ã€‚å¦‚æžœéœ€è¦ï¼Œä¹Ÿæ›´æ–° STATUS.mdã€‚`
-    };
     let currentLang = "en";
     const dayDetails = {
       1: {
@@ -1179,11 +1127,6 @@
         const leading = original.match(/^\s*/)[0];
         const trailing = original.match(/\s*$/)[0];
         node.nodeValue = `${leading}${translations[key]}${trailing}`;
-      });
-
-      document.querySelectorAll("textarea").forEach((input) => {
-        if (!originalInputs.has(input)) originalInputs.set(input, input.value);
-        input.value = lang === "zh" ? (zhInputs[input.id] || input.value) : originalInputs.get(input);
       });
 
       document.querySelectorAll("[data-lang]").forEach((button) => {
