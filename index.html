@@ -4,7 +4,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Weekly Agentic Planner</title>
-  <meta name="planner-build" content="switch-highlight-monday-1781710400">
+  <meta name="planner-build" content="dark-mode-toggle-1781711200">
+  <script>
+    (function () {
+      try {
+        const savedTheme = localStorage.getItem("plannerTheme");
+        if (savedTheme === "dark") document.documentElement.dataset.theme = "dark";
+      } catch (e) {}
+    })();
+  </script>
   <style>
     :root {
       color-scheme: light;
@@ -21,7 +29,35 @@
       --blue-soft: #dceaf6;
       --red: #9d3f34;
       --red-soft: #f2d9d5;
+      --panel-soft: #fbfcfa;
+      --hero-panel: rgba(255, 255, 255, 0.76);
+      --focus-bg: #172026;
+      --focus-text: #ffffff;
+      --bar-bg: #eef2f1;
       --shadow: 0 18px 60px rgba(23, 32, 38, 0.10);
+    }
+
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --ink: #edf3ef;
+      --muted: #a9b7b4;
+      --line: #26343a;
+      --paper: #0f1518;
+      --panel: #151e22;
+      --green: #7cc8a9;
+      --green-soft: #16372d;
+      --gold: #e0bd65;
+      --gold-soft: #3c3018;
+      --blue: #8dbbe8;
+      --blue-soft: #192c3d;
+      --red: #e9968b;
+      --red-soft: #3a201d;
+      --panel-soft: #10181b;
+      --hero-panel: rgba(21, 30, 34, 0.82);
+      --focus-bg: #0a1013;
+      --focus-text: #f7fbf8;
+      --bar-bg: #233138;
+      --shadow: 0 18px 60px rgba(0, 0, 0, 0.34);
     }
 
     * { box-sizing: border-box; }
@@ -152,6 +188,11 @@
       color: white;
     }
 
+    :root[data-theme="dark"] .lang-toggle :is(button, a).active {
+      background: var(--ink);
+      color: #0f1518;
+    }
+
 
     .hero {
       display: grid;
@@ -167,7 +208,7 @@
 
     .hero-copy {
       padding: 30px;
-      background: rgba(255, 255, 255, 0.76);
+      background: var(--hero-panel);
       border: 1px solid rgba(23, 32, 38, 0.10);
       border-radius: 8px;
       box-shadow: var(--shadow);
@@ -209,8 +250,8 @@
     }
 
     .now-card {
-      background: var(--ink);
-      color: white;
+      background: var(--focus-bg);
+      color: var(--focus-text);
       border-radius: 8px;
       padding: 24px;
       box-shadow: var(--shadow);
@@ -414,7 +455,7 @@
       border: 1px solid var(--line);
       border-radius: 8px;
       padding: 12px;
-      background: #fbfcfa;
+      background: var(--panel-soft);
     }
 
     .outcome-num {
@@ -459,7 +500,7 @@
 
     .bar {
       height: 9px;
-      background: #eef2f1;
+      background: var(--bar-bg);
       border-radius: 999px;
       overflow: hidden;
     }
@@ -544,7 +585,7 @@
       border: 1px solid var(--line);
       border-radius: 8px;
       padding: 12px;
-      background: #fbfcfa;
+      background: var(--panel-soft);
       color: var(--ink);
     }
 
@@ -665,6 +706,10 @@
         </div>
       </div>
       <div class="actions">
+        <div class="lang-toggle theme-toggle notranslate" translate="no" aria-label="Theme selector">
+          <button class="active notranslate" translate="no" data-theme-choice="light" type="button">Light</button>
+          <button class="notranslate" translate="no" data-theme-choice="dark" type="button">Dark</button>
+        </div>
         <div class="lang-toggle notranslate" translate="no" aria-label="Language selector">
           <a class="active notranslate" translate="no" data-lang="en" id="englishLink" href="https://mpan13579-ctrl.github.io/Weekly-Planner/" target="_top">EN</a>
           <a class="notranslate" translate="no" data-lang="zh" id="chineseLink" href="https://translate.google.com/translate?sl=en&tl=zh-CN&u=https%3A%2F%2Fmpan13579-ctrl.github.io%2FWeekly-Planner%2F" target="_top">&#31616;&#20013;</a>
@@ -1066,6 +1111,26 @@
       }
     }
 
+    function setTheme(theme) {
+      const nextTheme = theme === "dark" ? "dark" : "light";
+      document.documentElement.dataset.theme = nextTheme;
+      try { localStorage.setItem("plannerTheme", nextTheme); } catch (e) {}
+      document.querySelectorAll("[data-theme-choice]").forEach((button) => {
+        const isActive = button.dataset.themeChoice === nextTheme;
+        button.classList.toggle("active", isActive);
+        button.setAttribute("aria-pressed", String(isActive));
+      });
+    }
+
+    function configureThemeToggle() {
+      let savedTheme = "light";
+      try { savedTheme = localStorage.getItem("plannerTheme") || "light"; } catch (e) {}
+      setTheme(savedTheme);
+      document.querySelectorAll("[data-theme-choice]").forEach((button) => {
+        button.addEventListener("click", () => setTheme(button.dataset.themeChoice));
+      });
+    }
+
     document.querySelectorAll("[data-copy]").forEach((button) => {
       button.addEventListener("click", async () => {
         const target = document.querySelector(button.dataset.copy);
@@ -1090,6 +1155,7 @@
     try {
       selectedFocusDay = dayDetails[selectedFocusDay] ? selectedFocusDay : 2;
       configureLanguageLinks();
+      configureThemeToggle();
       renderFocusDay(selectedFocusDay);
     } catch (e) {
       renderFocusDay(2);
