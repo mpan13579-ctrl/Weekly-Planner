@@ -124,6 +124,30 @@
       transform: translateY(-1px);
     }
 
+    .lang-toggle {
+      display: inline-flex;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      padding: 3px;
+      box-shadow: 0 8px 24px rgba(23, 32, 38, 0.06);
+    }
+
+    .lang-toggle button {
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      min-height: 32px;
+      padding: 6px 10px;
+    }
+
+    .lang-toggle button.active {
+      background: var(--ink);
+      color: white;
+    }
+
     .hero {
       display: grid;
       grid-template-columns: 1.2fr 0.8fr;
@@ -555,6 +579,10 @@
         </div>
       </div>
       <div class="actions">
+        <div class="lang-toggle" aria-label="Language selector">
+          <button class="active" data-lang="en" type="button">EN</button>
+          <button data-lang="zh" type="button">简中</button>
+        </div>
         <button class="btn" data-copy="#dailyPrompt">Copy daily check-in</button>
         <button class="btn primary" data-scroll="#today">Show today</button>
       </div>
@@ -809,11 +837,165 @@ Update my weekly plan and tell me the next best action. If needed, update STATUS
 
   <script>
     const toast = document.querySelector("#toast");
+    const originalText = new WeakMap();
+    const originalInputs = new WeakMap();
+    const translations = {
+      "Week of June 16, 2026": "2026年6月16日这一周",
+      "Weekly Agentic Planner": "每周智能规划台",
+      "Copy daily check-in": "复制每日检查",
+      "Show today": "查看今天",
+      "Plain-English version": "白话版",
+      "Not a bigger todo list. A weekly control loop.": "不是更长的待办清单，而是一套每周循环系统。",
+      "A spreadsheet stores tasks. An agentic planner helps decide what matters, notices slippage, turns vague work into next actions, and updates the plan when reality changes.": "表格只是存任务。智能规划会帮你判断重点、发现进度偏差、把模糊事项变成下一步行动，并在现实变化时更新计划。",
+      "Plan": "规划",
+      "Pick outcomes, tasks, and realistic time blocks.": "确定成果、任务和现实可行的时间块。",
+      "Execute": "执行",
+      "Work from the smallest useful next action.": "从最小但有用的下一步开始做。",
+      "Check": "检查",
+      "Compare plan vs. evidence and expose blockers.": "对照计划和实际证据，找出卡点。",
+      "Replan": "重排",
+      "Move the week forward instead of preserving a stale list.": "推动这一周继续前进，而不是守着过期清单。",
+      "Today: Tuesday": "今天：周二",
+      "Task 3 data source pass": "任务3数据源梳理",
+      "Smallest useful action: list the exact WASDE, rubber, rice, and historical-analog data gaps.": "最小有用行动：列出WASDE、橡胶、水稻和历史类比数据的具体缺口。",
+      "1": "1",
+      "deep task": "深度任务",
+      "2": "2",
+      "small actions": "小行动",
+      "90": "90",
+      "min checkpoint": "分钟检查点",
+      "Current Project State": "当前项目状态",
+      "Based on the LP status board, compressed into what you need this week.": "基于LP状态板，压缩成这周真正需要看的内容。",
+      "Task 3: El Nino agriculture": "任务3：厄尔尼诺与农业",
+      "65% drafted": "65% 已起草",
+      "Task 1: financial AI-agent survey": "任务1：金融AI Agent调研",
+      "60% drafted": "60% 已起草",
+      "LP system build": "LP系统建设",
+      "10% scoping": "10% 范围梳理",
+      "Task 2: metals balance": "任务2：金属供需平衡",
+      "paused": "已暂停",
+      "This Week's Outcomes": "本周成果目标",
+      "Think of these as finished-state targets, not random todos.": "把它们当成完成后的状态目标，而不是零散待办。",
+      "Task 3 gets more evidence-backed": "任务3更有证据支撑",
+      "Add supply-demand tables, data gaps, and source checks for the agriculture report.": "为农业报告补充供需表、数据缺口和来源核查。",
+      "Task 1 becomes easier to defend": "任务1更容易被论证",
+      "Verify the financial AI-agent examples and clean up the category logic.": "核实金融AI Agent案例，并理顺分类逻辑。",
+      "LP design gets clearer": "LP设计更清晰",
+      "Pull concrete system principles from Task 1 after the survey is stronger.": "等调研更扎实后，从任务1提炼具体系统原则。",
+      "Week Plan": "周计划",
+      "One main deep-work target per day so the plan survives contact with real life.": "每天只放一个主要深度任务，让计划能扛住真实生活。",
+      "Tue": "周二",
+      "today": "今天",
+      "Deep work": "深度工作",
+      "Checkpoint": "检查点",
+      "You can explain exact data gaps.": "你能讲清楚具体数据缺口。",
+      "Wed": "周三",
+      "Task 3 v2 writing pass": "任务3 v2 写作",
+      "Draft has cited tables.": "草稿已有引用表格。",
+      "Thu": "周四",
+      "Task 1 verification pass": "任务1核验",
+      "Categories are defensible.": "分类逻辑站得住脚。",
+      "Fri": "周五",
+      "Task 1 v2 writing pass": "任务1 v2 写作",
+      "Survey is ready for review.": "调研稿可进入审阅。",
+      "Sat": "周六",
+      "LP design synthesis": "LP设计综合",
+      "System principles drafted.": "系统原则已起草。",
+      "Sun": "周日",
+      "Review": "复盘",
+      "Clean the board and choose next week's top three.": "整理状态板，并选出下周前三目标。",
+      "The status board is current.": "状态板已更新。",
+      "Which Agent Mode?": "选择哪种Agent模式？",
+      "Choose the behavior you want, not a fancy tool name.": "选你想要的行为，不是选花哨的工具名。",
+      "Best default": "默认首选",
+      "Chief of Staff": "参谋长",
+      "Tracks the source of truth, identifies the next action, and updates status when work finishes.": "追踪唯一事实源，指出下一步，并在完成后更新状态。",
+      "Useful daily": "适合每天用",
+      "Calendar Planner": "日程规划",
+      "Turns the week into time blocks with buffers, instead of pretending everything fits.": "把一周变成带缓冲的时间块，而不是假装所有事都能塞进去。",
+      "Useful weekly": "适合每周用",
+      "Retrospective Agent": "复盘Agent",
+      "Looks at what slipped and rewrites the next week based on actual evidence.": "查看哪些事情延误，并基于真实证据重写下周计划。",
+      "Automation Path": "自动化路径",
+      "You can use this now manually. The bridge only matters for hands-off scheduling and tool handoffs.": "现在可以手动使用。桥接只在需要自动排程和工具交接时才重要。",
+      "Manual now": "现在手动",
+      "Open this page, copy a prompt, paste into Codex or Claude, then update the status board after work.": "打开本页，复制提示词，粘贴到Codex或Claude，完成工作后更新状态板。",
+      "Agent-assisted": "Agent辅助",
+      "Use Claude/Codex to read the files and rewrite the plan whenever your priorities change.": "当优先级变化时，让Claude/Codex读取文件并重写计划。",
+      "Automated later": "之后自动化",
+      "After the Codex-OpenClaw MCP bridge is done, OpenClaw can run scheduled check-ins and hand work to tools.": "等Codex-OpenClaw MCP桥接完成后，OpenClaw可以定时检查并把工作交给工具。",
+      "Copyable Prompts": "可复制提示词",
+      "These are the parts worth pasting into an agent. Everything else is just the dashboard.": "这些才是值得粘贴给Agent的内容，其他只是仪表盘。",
+      "Daily Check-In": "每日检查",
+      "Progress Update": "进度更新",
+      "Copy prompt": "复制提示词",
+      "Copied": "已复制",
+      "Copied prompt": "已复制提示词"
+    };
+
+    const zhInputs = {
+      dailyPrompt: `作为我的每周参谋长Agent。读取 lp-system/STATUS.md 和 lp-system/agent/weekly-agentic-planner.md。
+给我：
+1. 今天最重要的1个深度工作任务，
+2. 最小但有用的下一步行动，
+3. 当前有什么卡点或不清楚的地方，
+4. 一个带缓冲的现实日程，
+5. 完成后应该更新哪个文件。
+保持简短，并使用中文。`,
+      progressPrompt: `我刚刚做了：[我做了什么]
+证据/产物：[文件、笔记、链接或结果]
+剩余精力：[低/中/高]
+今天剩余时间：[分钟/小时]
+
+请更新我的每周计划，并告诉我下一个最佳行动。如果需要，也更新 STATUS.md。`
+    };
+    let currentLang = "en";
 
     function showToast(message) {
-      toast.textContent = message;
+      toast.textContent = currentLang === "zh" ? (translations[message] || message) : message;
       toast.classList.add("show");
       window.setTimeout(() => toast.classList.remove("show"), 1400);
+    }
+
+    function normalized(text) {
+      return text.trim().replace(/\s+/g, " ");
+    }
+
+    function applyLanguage(lang) {
+      currentLang = lang;
+      document.documentElement.lang = lang === "zh" ? "zh-Hans" : "en";
+      document.title = lang === "zh" ? translations["Weekly Agentic Planner"] : "Weekly Agentic Planner";
+
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      const textNodes = [];
+      while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+      textNodes.forEach((node) => {
+        const parent = node.parentElement;
+        if (!parent || ["SCRIPT", "STYLE", "TEXTAREA"].includes(parent.tagName)) return;
+        if (!originalText.has(node)) originalText.set(node, node.nodeValue);
+        const original = originalText.get(node);
+        if (lang === "en") {
+          node.nodeValue = original;
+          return;
+        }
+        const key = normalized(original);
+        if (!translations[key]) return;
+        const leading = original.match(/^\s*/)[0];
+        const trailing = original.match(/\s*$/)[0];
+        node.nodeValue = `${leading}${translations[key]}${trailing}`;
+      });
+
+      document.querySelectorAll("textarea").forEach((input) => {
+        if (!originalInputs.has(input)) originalInputs.set(input, input.value);
+        input.value = lang === "zh" ? (zhInputs[input.id] || input.value) : originalInputs.get(input);
+      });
+
+      document.querySelectorAll("[data-lang]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.lang === lang);
+      });
+
+      try { localStorage.setItem("plannerLanguage", lang); } catch (e) {}
     }
 
     async function copyText(text) {
@@ -848,6 +1030,16 @@ Update my weekly plan and tell me the next best action. If needed, update STATUS
         if (target) target.scrollIntoView({ behavior: "smooth", block: "center" });
       });
     });
+
+    document.querySelectorAll("[data-lang]").forEach((button) => {
+      button.addEventListener("click", () => applyLanguage(button.dataset.lang));
+    });
+
+    try {
+      applyLanguage(localStorage.getItem("plannerLanguage") || "en");
+    } catch (e) {
+      applyLanguage("en");
+    }
 
     // Auto-refresh so newly auto-added WeChat tasks appear. Preserves scroll; pauses when the tab is hidden.
     (function () {
