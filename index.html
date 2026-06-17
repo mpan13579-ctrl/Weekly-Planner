@@ -148,6 +148,17 @@
       color: white;
     }
 
+    #google_translate_element,
+    .goog-te-banner-frame,
+    .goog-te-gadget,
+    .skiptranslate iframe {
+      display: none !important;
+    }
+
+    body {
+      top: 0 !important;
+    }
+
     .hero {
       display: grid;
       grid-template-columns: 1.2fr 0.8fr;
@@ -710,61 +721,22 @@
       </aside>
     </section>
 
-<!-- INTAKE:START -->
-    <section class="section" id="todayTasks">
+    <section class="section" id="taskInbox">
       <div class="section-head">
         <div>
-          <h2>&#x2705; Do Today &mdash; texted in</h2>
-          <p>Short tasks you or the group sent that should get done today. Delete anything that does not belong.</p>
-        </div>
-        <span class="pill green">auto-updates</span>
-      </div>
-      <div class="card">
-        <!-- TASKS-DAILY:START -->
-<div class="status-row" style="grid-template-columns:1fr auto auto;gap:10px;">
-  <div><strong>Message mom</strong><p class="subtle" style="margin-top:2px;">Contact mom by tomorrow &middot; from Michael &middot; 6/16/2026, 11:21:49 PM</p></div>
-  <span class="pill gold">medium</span><span class="pill blue">tomorrow</span>
-</div>
-        <!-- TASKS-DAILY:END -->
-      </div>
-    </section>
-
-    <section class="section" id="weekTasks">
-      <div class="section-head">
-        <div>
-          <h2>&#x1F5D3;&#xFE0F; This week &mdash; texted in</h2>
-          <p>Larger, multi-day tasks you sent (reports, projects, drafts).</p>
-        </div>
-        <span class="pill gold">auto-updates</span>
-      </div>
-      <div class="card">
-        <!-- TASKS-WEEKLY:START -->
-<p class="subtle">No multi-day tasks yet &mdash; longer things you text (e.g. &ldquo;finish the Task 2 metals report&rdquo;) land here.</p>
-        <!-- TASKS-WEEKLY:END -->
-      </div>
-    </section>
-
-    <section class="section" id="taskInboxInfo">
-      <div class="section-head">
-        <div>
-          <h2>&#x1F4E5; Inbox &mdash; information</h2>
-          <p>FYI / reference items you or the group sent. Not tasks &mdash; just things worth keeping in view.</p>
+          <h2>&#x1F4E5; Inbox &mdash; auto-added from Telegram</h2>
+          <p>Text a task to your Telegram bot and it appears here automatically. Delete anything that does not belong.</p>
         </div>
         <span class="pill blue">auto-updates</span>
       </div>
       <div class="card">
-        <!-- INBOX-INFO:START -->
-<div class="status-row" style="grid-template-columns:1fr auto;gap:10px;">
-  <div><strong>Infrastructure group messages overwhelming</strong><p class="subtle" style="margin-top:2px;">Gene reports the infrastructure group chat has too many messages to keep up with. May need to adjust notification settings or request message consolidation. &middot; from Gene · LP任务 &middot; 6/17/2026, 12:08:09 AM</p></div>
-  <span class="pill blue">info</span>
-</div>
-        <!-- INBOX-INFO:END -->
+        <!-- WECHAT-INBOX:START -->
+        <p class="subtle" id="taskInboxEmpty">No items yet - text a task to your Telegram bot and it shows up here automatically.</p>
+        <!-- WECHAT-INBOX:END -->
       </div>
     </section>
-<!-- INTAKE:END -->
 
-
-<section class="section">
+    <section class="section">
       <div class="section-head">
         <div>
           <h2>Current Project State</h2>
@@ -881,465 +853,69 @@
   </main>
 
   <div class="toast" id="toast">Copied</div>
+  <div id="google_translate_element" aria-hidden="true"></div>
 
   <script>
     const toast = document.querySelector("#toast");
-    const originalText = new WeakMap();
-    const originalInputs = new WeakMap();
-    const translations = {
-      "Week of June 16, 2026": "2026\u5e746\u670816\u65e5\u8fd9\u4e00\u5468",
-      "Weekly Agentic Planner": "\u6bcf\u5468\u667a\u80fd\u89c4\u5212\u53f0",
-      "Show today": "\u67e5\u770b\u4eca\u5929",
-      "Today: Tuesday": "\u4eca\u5929\uff1a\u5468\u4e8c",
-      "PC specs + El Nino source list": "\u7535\u8111\u914d\u7f6e + \u5384\u5c14\u5c3c\u8bfa\u6765\u6e90\u6e05\u5355",
-      "Capture the computer specs, then start the El Nino data-source list so the research work has a clean base.": "\u5148\u8bb0\u5f55\u7535\u8111\u914d\u7f6e\uff0c\u518d\u542f\u52a8\u5384\u5c14\u5c3c\u8bfa\u6570\u636e\u6765\u6e90\u6e05\u5355\uff0c\u8ba9\u7814\u7a76\u5de5\u4f5c\u6709\u5e72\u51c0\u57fa\u7840\u3002",
-      "work threads": "\u5de5\u4f5c\u7ebf",
-      "next actions": "\u4e0b\u4e00\u6b65",
-      "min checkpoint": "\u5206\u949f\u68c0\u67e5\u70b9",
-      "Do Today": "\u4eca\u5929\u8981\u505a",
-      "Suggested Blocks": "\u5efa\u8bae\u65f6\u95f4\u5757",
-      "Done When": "\u5b8c\u6210\u6807\u51c6",
-      "Current Project State": "\u5f53\u524d\u9879\u76ee\u72b6\u6001",
-      "Based on the LP status board, compressed into what you need this week.": "\u57fa\u4e8eLP\u72b6\u6001\u677f\uff0c\u538b\u7f29\u6210\u8fd9\u5468\u771f\u6b63\u9700\u8981\u770b\u7684\u5185\u5bb9\u3002",
-      "Find PC specs": "\u67e5\u627e\u7535\u8111\u914d\u7f6e",
-      "Find Wi-Fi hardware": "\u67e5\u627eWi-Fi\u786c\u4ef6",
-      "Task 3: El Nino agriculture": "\u4efb\u52a13\uff1a\u5384\u5c14\u5c3c\u8bfa\u4e0e\u519c\u4e1a",
-      "Task 2: metals balance": "\u4efb\u52a12\uff1a\u91d1\u5c5e\u4f9b\u9700\u5e73\u8861",
-      "0% planned": "0% \u5df2\u8ba1\u5212",
-      "This Week's Outcomes": "\u672c\u5468\u6210\u679c\u76ee\u6807",
-      "Think of these as finished-state targets, not random todos.": "\u628a\u5b83\u4eec\u5f53\u6210\u5b8c\u6210\u540e\u7684\u72b6\u6001\u76ee\u6807\uff0c\u800c\u4e0d\u662f\u96f6\u6563\u5f85\u529e\u3002",
-      "Hardware baseline is captured": "\u786c\u4ef6\u57fa\u7ebf\u5df2\u8bb0\u5f55",
-      "Document PC specs and Wi-Fi hardware across the first two days.": "\u524d\u4e24\u5929\u5b8c\u6210\u7535\u8111\u914d\u7f6e\u548cWi-Fi\u786c\u4ef6\u8bb0\u5f55\u3002",
-      "El Nino report moves every workday": "\u5384\u5c14\u5c3c\u8bfa\u62a5\u544a\u6bcf\u5929\u63a8\u8fdb",
-      "Build the source map, fill data gaps, and draft cited sections.": "\u5efa\u7acb\u6765\u6e90\u5730\u56fe\u3001\u586b\u8865\u6570\u636e\u7f3a\u53e3\uff0c\u5e76\u8d77\u8349\u5e26\u5f15\u7528\u7684\u6bb5\u843d\u3002",
-      "Metals balance gets a table skeleton": "\u91d1\u5c5e\u5e73\u8861\u8868\u6709\u8868\u683c\u9aa8\u67b6",
-      "Start the Cu/Sn/Li2CO3 source map and structure the balance table.": "\u542f\u52a8\u94dc/\u9521/\u78b3\u9178\u9502\u6765\u6e90\u5730\u56fe\uff0c\u5e76\u642d\u5efa\u5e73\u8861\u8868\u7ed3\u6784\u3002",
-      "Week Plan": "\u5468\u8ba1\u5212",
-      "One main deep-work target per day so the plan survives contact with real life.": "\u6bcf\u5929\u53ea\u653e\u4e00\u4e2a\u4e3b\u8981\u6df1\u5ea6\u4efb\u52a1\uff0c\u8ba9\u8ba1\u5212\u80fd\u625b\u4f4f\u771f\u5b9e\u751f\u6d3b\u3002",
-      "Tue": "\u5468\u4e8c",
-      "today": "\u4eca\u5929",
-      "Hardware + El Nino": "\u786c\u4ef6 + \u5384\u5c14\u5c3c\u8bfa",
-      "Checkpoint": "\u68c0\u67e5\u70b9",
-      "Specs noted; first source gaps listed.": "\u914d\u7f6e\u5df2\u8bb0\u5f55\uff1b\u9996\u6279\u6765\u6e90\u7f3a\u53e3\u5df2\u5217\u51fa\u3002",
-      "Wed": "\u5468\u4e09",
-      "Hardware + Metals": "\u786c\u4ef6 + \u91d1\u5c5e",
-      "Wi-Fi hardware + metals source anchors": "Wi-Fi\u786c\u4ef6 + \u91d1\u5c5e\u6765\u6e90\u951a\u70b9",
-      "Adapter details captured; source list started.": "\u7f51\u5361\u7ec6\u8282\u5df2\u8bb0\u5f55\uff1b\u6765\u6e90\u6e05\u5355\u5df2\u542f\u52a8\u3002",
-      "Thu": "\u5468\u56db",
-      "El Nino + Metals": "\u5384\u5c14\u5c3c\u8bfa + \u91d1\u5c5e",
-      "El Nino data pass + metals table shape": "\u5384\u5c14\u5c3c\u8bfa\u6570\u636e\u68b3\u7406 + \u91d1\u5c5e\u8868\u7ed3\u6784",
-      "Data gaps mapped; table columns chosen.": "\u6570\u636e\u7f3a\u53e3\u5df2\u6620\u5c04\uff1b\u8868\u683c\u5217\u5df2\u786e\u5b9a\u3002",
-      "Fri": "\u5468\u4e94",
-      "El Nino": "\u5384\u5c14\u5c3c\u8bfa",
-      "Task 3 v2 writing pass": "\u4efb\u52a13 v2 \u5199\u4f5c",
-      "Draft has cited tables.": "\u8349\u7a3f\u5df2\u6709\u5f15\u7528\u8868\u683c\u3002",
-      "Sat": "\u5468\u516d",
-      "Metals": "\u91d1\u5c5e",
-      "Metals balance skeleton": "\u91d1\u5c5e\u5e73\u8861\u8868\u9aa8\u67b6",
-      "Cu/Sn/Li2CO3 table skeleton exists.": "\u94dc/\u9521/\u78b3\u9178\u9502\u8868\u683c\u9aa8\u67b6\u5df2\u5b58\u5728\u3002",
-      "Sun": "\u5468\u65e5",
-      "Review + Carryover": "\u590d\u76d8 + \u7ed3\u8f6c",
-      "Review El Nino and metals progress": "\u590d\u76d8\u5384\u5c14\u5c3c\u8bfa\u548c\u91d1\u5c5e\u8fdb\u5c55",
-      "Next week's carryover is clean.": "\u4e0b\u5468\u7ed3\u8f6c\u4e8b\u9879\u5df2\u6574\u7406\u6e05\u695a\u3002",
-      "Copied": "\u5df2\u590d\u5236",
-      "Copied prompt": "\u5df2\u590d\u5236\u63d0\u793a\u8bcd"
-    };
-
     let currentLang = "en";
     const dayDetails = {
       0: {
-            "en": {
-                  "day": "Sunday",
-                  "title": "Weekly review",
-                  "summary": "Clean the board and decide what next week is actually for.",
-                  "actions": [
-                        "Mark finished work as done.",
-                        "Write what moved but is not finished.",
-                        "Choose next week's top 3 outcomes."
-                  ],
-                  "blocks": [
-                        [
-                              "30 min",
-                              "Review finished work"
-                        ],
-                        [
-                              "30 min",
-                              "Clean status board"
-                        ],
-                        [
-                              "20 min",
-                              "Pick next week"
-                        ]
-                  ],
-                  "done": [
-                        "The board is current and next week has a clean starting point."
-                  ]
-            },
-            "zh": {
-                  "day": "\u5468\u65e5",
-                  "title": "\u6bcf\u5468\u590d\u76d8",
-                  "summary": "\u6574\u7406\u72b6\u6001\u677f\uff0c\u51b3\u5b9a\u4e0b\u5468\u771f\u6b63\u8981\u56f4\u7ed5\u4ec0\u4e48\u3002",
-                  "actions": [
-                        "\u628a\u5b8c\u6210\u7684\u5de5\u4f5c\u6807\u4e3a\u5df2\u5b8c\u6210\u3002",
-                        "\u5199\u4e0b\u6709\u8fdb\u5c55\u4f46\u672a\u5b8c\u6210\u7684\u4e8b\u60c5\u3002",
-                        "\u9009\u51fa\u4e0b\u5468\u524d\u4e09\u4e2a\u6210\u679c\u76ee\u6807\u3002"
-                  ],
-                  "blocks": [
-                        [
-                              "30\u5206\u949f",
-                              "\u56de\u770b\u5df2\u5b8c\u6210\u5de5\u4f5c"
-                        ],
-                        [
-                              "30\u5206\u949f",
-                              "\u6574\u7406\u72b6\u6001\u677f"
-                        ],
-                        [
-                              "20\u5206\u949f",
-                              "\u786e\u5b9a\u4e0b\u5468"
-                        ]
-                  ],
-                  "done": [
-                        "\u72b6\u6001\u677f\u662f\u6700\u65b0\u7684\uff0c\u4e0b\u5468\u6709\u5e72\u51c0\u7684\u8d77\u70b9\u3002"
-                  ]
-            }
+        day: "Sunday",
+        title: "Review El Nino and metals progress",
+        summary: "Cleanly carry over both week-long projects into next week.",
+        actions: ["Mark finished hardware work as done.", "Summarize Task 3 progress and gaps.", "Summarize metals balance progress and gaps.", "Choose next week's top 3 outcomes."],
+        blocks: [["30 min", "Review hardware and Task 3"], ["30 min", "Review metals"], ["20 min", "Pick next week"]],
+        done: ["Next week starts with clean carryover for El Nino and metals."]
       },
       1: {
-            "en": {
-                  "day": "Monday",
-                  "title": "Reset and choose the week",
-                  "summary": "Use Monday to clean the board and decide what matters.",
-                  "actions": [
-                        "Review what slipped last week.",
-                        "Choose the top 3 outcomes for this week.",
-                        "Move stale tasks into paused or later."
-                  ],
-                  "blocks": [
-                        [
-                              "30 min",
-                              "Review the board"
-                        ],
-                        [
-                              "30 min",
-                              "Choose priorities"
-                        ],
-                        [
-                              "15 min",
-                              "Clean small tasks"
-                        ]
-                  ],
-                  "done": [
-                        "The week has one clear main direction."
-                  ]
-            },
-            "zh": {
-                  "day": "\u5468\u4e00",
-                  "title": "\u91cd\u7f6e\u672c\u5468\u65b9\u5411",
-                  "summary": "\u7528\u5468\u4e00\u6574\u7406\u72b6\u6001\u677f\uff0c\u5e76\u51b3\u5b9a\u771f\u6b63\u91cd\u8981\u7684\u4e8b\u60c5\u3002",
-                  "actions": [
-                        "\u56de\u770b\u4e0a\u5468\u5ef6\u8bef\u7684\u4e8b\u60c5\u3002",
-                        "\u9009\u51fa\u672c\u5468\u524d\u4e09\u4e2a\u6210\u679c\u76ee\u6807\u3002",
-                        "\u628a\u8fc7\u671f\u4efb\u52a1\u79fb\u5230\u6682\u505c\u6216\u7a0d\u540e\u3002"
-                  ],
-                  "blocks": [
-                        [
-                              "30\u5206\u949f",
-                              "\u68c0\u67e5\u72b6\u6001\u677f"
-                        ],
-                        [
-                              "30\u5206\u949f",
-                              "\u786e\u5b9a\u4f18\u5148\u7ea7"
-                        ],
-                        [
-                              "15\u5206\u949f",
-                              "\u6e05\u7406\u5c0f\u4efb\u52a1"
-                        ]
-                  ],
-                  "done": [
-                        "\u672c\u5468\u6709\u4e00\u4e2a\u6e05\u6670\u4e3b\u65b9\u5411\u3002"
-                  ]
-            }
+        day: "Monday",
+        title: "Reset and choose the week",
+        summary: "Use Monday to clean the board and decide what matters.",
+        actions: ["Review what slipped last week.", "Choose the top 3 outcomes for this week.", "Move stale tasks into paused or later."],
+        blocks: [["30 min", "Review the board"], ["30 min", "Choose priorities"], ["15 min", "Clean small tasks"]],
+        done: ["The week has one clear main direction."]
       },
       2: {
-            "en": {
-                  "day": "Tuesday",
-                  "title": "Find PC specs",
-                  "summary": "Smallest useful action: capture CPU, RAM, GPU, storage, OS, and machine model in one note.",
-                  "actions": [
-                        "Open Windows System Information and capture the main specs.",
-                        "Check GPU, RAM, storage, and OS details.",
-                        "Save the findings in one clean note for the project."
-                  ],
-                  "blocks": [
-                        [
-                              "20 min",
-                              "Collect specs"
-                        ],
-                        [
-                              "15 min",
-                              "Verify details"
-                        ],
-                        [
-                              "10 min",
-                              "Write summary"
-                        ]
-                  ],
-                  "done": [
-                        "You have a short, accurate PC spec summary ready to share."
-                  ]
-            },
-            "zh": {
-                  "day": "\u5468\u4e8c",
-                  "title": "\u67e5\u627e\u7535\u8111\u914d\u7f6e",
-                  "summary": "\u6700\u5c0f\u6709\u7528\u884c\u52a8\uff1a\u628aCPU\u3001\u5185\u5b58\u3001\u663e\u5361\u3001\u5b58\u50a8\u3001\u7cfb\u7edf\u548c\u8bbe\u5907\u578b\u53f7\u6574\u7406\u5230\u4e00\u4efd\u7b14\u8bb0\u91cc\u3002",
-                  "actions": [
-                        "\u6253\u5f00Windows\u7cfb\u7edf\u4fe1\u606f\u5e76\u8bb0\u5f55\u4e3b\u8981\u914d\u7f6e\u3002",
-                        "\u68c0\u67e5\u663e\u5361\u3001\u5185\u5b58\u3001\u5b58\u50a8\u548c\u7cfb\u7edf\u4fe1\u606f\u3002",
-                        "\u628a\u7ed3\u679c\u6574\u7406\u6210\u4e00\u4efd\u6e05\u6670\u9879\u76ee\u7b14\u8bb0\u3002"
-                  ],
-                  "blocks": [
-                        [
-                              "20\u5206\u949f",
-                              "\u6536\u96c6\u914d\u7f6e"
-                        ],
-                        [
-                              "15\u5206\u949f",
-                              "\u6838\u5bf9\u7ec6\u8282"
-                        ],
-                        [
-                              "10\u5206\u949f",
-                              "\u5199\u603b\u7ed3"
-                        ]
-                  ],
-                  "done": [
-                        "\u4f60\u6709\u4e00\u4efd\u7b80\u77ed\u51c6\u786e\u3001\u53ef\u4ee5\u5206\u4eab\u7684\u7535\u8111\u914d\u7f6e\u603b\u7ed3\u3002"
-                  ]
-            }
+        day: "Tuesday",
+        title: "PC specs + El Nino source list",
+        summary: "Capture the computer specs, then start the El Nino data-source list so the research work has a clean base.",
+        actions: ["Capture CPU, RAM, GPU, storage, OS, and machine model.", "Write the PC spec summary in one clean note.", "Open the El Nino report and list missing source tables.", "Mark the first data gaps for Thursday's deeper pass."],
+        blocks: [["35 min", "Collect PC specs"], ["35 min", "Start El Nino source map"], ["20 min", "Write summary notes"]],
+        done: ["The PC specs are documented and the El Nino source-gap list has started."]
       },
       3: {
-            "en": {
-                  "day": "Wednesday",
-                  "title": "Find Wi-Fi hardware",
-                  "summary": "Identify the exact wireless adapter, driver version, and connection details.",
-                  "actions": [
-                        "Open Device Manager and find the Wi-Fi adapter name.",
-                        "Record driver version, Wi-Fi standard, and current connection details.",
-                        "Save the hardware details beside the PC specs note."
-                  ],
-                  "blocks": [
-                        [
-                              "20 min",
-                              "Find adapter model"
-                        ],
-                        [
-                              "15 min",
-                              "Record driver details"
-                        ],
-                        [
-                              "10 min",
-                              "Write summary"
-                        ]
-                  ],
-                  "done": [
-                        "The Wi-Fi adapter model and driver details are clearly captured."
-                  ]
-            },
-            "zh": {
-                  "day": "\u5468\u4e09",
-                  "title": "\u67e5\u627eWi-Fi\u786c\u4ef6",
-                  "summary": "\u786e\u8ba4\u51c6\u786e\u7684\u65e0\u7ebf\u7f51\u5361\u578b\u53f7\u3001\u9a71\u52a8\u7248\u672c\u548c\u8fde\u63a5\u4fe1\u606f\u3002",
-                  "actions": [
-                        "\u6253\u5f00\u8bbe\u5907\u7ba1\u7406\u5668\u5e76\u627e\u5230Wi-Fi\u7f51\u5361\u540d\u79f0\u3002",
-                        "\u8bb0\u5f55\u9a71\u52a8\u7248\u672c\u3001Wi-Fi\u6807\u51c6\u548c\u5f53\u524d\u8fde\u63a5\u4fe1\u606f\u3002",
-                        "\u628a\u786c\u4ef6\u4fe1\u606f\u4fdd\u5b58\u5230\u7535\u8111\u914d\u7f6e\u7b14\u8bb0\u65c1\u8fb9\u3002"
-                  ],
-                  "blocks": [
-                        [
-                              "20\u5206\u949f",
-                              "\u67e5\u627e\u7f51\u5361\u578b\u53f7"
-                        ],
-                        [
-                              "15\u5206\u949f",
-                              "\u8bb0\u5f55\u9a71\u52a8\u4fe1\u606f"
-                        ],
-                        [
-                              "10\u5206\u949f",
-                              "\u5199\u603b\u7ed3"
-                        ]
-                  ],
-                  "done": [
-                        "Wi-Fi\u7f51\u5361\u578b\u53f7\u548c\u9a71\u52a8\u4fe1\u606f\u5df2\u6e05\u695a\u8bb0\u5f55\u3002"
-                  ]
-            }
+        day: "Wednesday",
+        title: "Wi-Fi hardware + metals source anchors",
+        summary: "Finish the shorter Wi-Fi hardware check and start the metals balance source list.",
+        actions: ["Find the exact Wi-Fi adapter model and driver version.", "Record current connection details.", "List first anchor sources for copper, tin, and lithium carbonate.", "Note which metals table fields are still unknown."],
+        blocks: [["30 min", "Capture Wi-Fi hardware"], ["35 min", "Start metals source anchors"], ["20 min", "Write unknowns"]],
+        done: ["Wi-Fi details are captured and the metals source list has started."]
       },
       4: {
-            "en": {
-                  "day": "Thursday",
-                  "title": "Task 3 data source pass",
-                  "summary": "List the exact WASDE, rubber, rice, and historical-analog data gaps.",
-                  "actions": [
-                        "Open the Task 3 draft and mark missing data tables.",
-                        "List exact WASDE, rubber, rice, and historical analog sources.",
-                        "Write the data gaps into next-action notes."
-                  ],
-                  "blocks": [
-                        [
-                              "45 min",
-                              "Find source tables"
-                        ],
-                        [
-                              "30 min",
-                              "Map gaps"
-                        ],
-                        [
-                              "15 min",
-                              "Update notes"
-                        ]
-                  ],
-                  "done": [
-                        "You can explain exactly which data is missing and where it belongs."
-                  ]
-            },
-            "zh": {
-                  "day": "\u5468\u56db",
-                  "title": "\u4efb\u52a13\u6570\u636e\u6e90\u68b3\u7406",
-                  "summary": "\u5217\u51faWASDE\u3001\u6a61\u80f6\u3001\u6c34\u7a3b\u548c\u5386\u53f2\u7c7b\u6bd4\u6570\u636e\u7684\u5177\u4f53\u7f3a\u53e3\u3002",
-                  "actions": [
-                        "\u6253\u5f00\u4efb\u52a13\u8349\u7a3f\uff0c\u6807\u51fa\u7f3a\u5931\u7684\u6570\u636e\u8868\u3002",
-                        "\u5217\u51faWASDE\u3001\u6a61\u80f6\u3001\u6c34\u7a3b\u548c\u5386\u53f2\u7c7b\u6bd4\u6765\u6e90\u3002",
-                        "\u628a\u6570\u636e\u7f3a\u53e3\u5199\u5165\u4e0b\u4e00\u6b65\u7b14\u8bb0\u3002"
-                  ],
-                  "blocks": [
-                        [
-                              "45\u5206\u949f",
-                              "\u67e5\u627e\u6765\u6e90\u8868"
-                        ],
-                        [
-                              "30\u5206\u949f",
-                              "\u6620\u5c04\u7f3a\u53e3"
-                        ],
-                        [
-                              "15\u5206\u949f",
-                              "\u66f4\u65b0\u7b14\u8bb0"
-                        ]
-                  ],
-                  "done": [
-                        "\u4f60\u80fd\u8bb2\u6e05\u695a\u54ea\u4e9b\u6570\u636e\u7f3a\u5931\uff0c\u4ee5\u53ca\u5b83\u4eec\u5e94\u8be5\u653e\u5728\u54ea\u91cc\u3002"
-                  ]
-            }
+        day: "Thursday",
+        title: "El Nino data pass + metals table shape",
+        summary: "Deepen the El Nino source map while giving the metals balance table a real structure.",
+        actions: ["Map WASDE, rubber, rice, and historical analog data gaps.", "Choose the columns for the metals balance table.", "Separate facts, estimates, and open questions.", "Update the next-action notes."],
+        blocks: [["45 min", "Map El Nino gaps"], ["35 min", "Shape metals table"], ["15 min", "Update notes"]],
+        done: ["El Nino gaps are mapped and the metals table columns are chosen."]
       },
       5: {
-            "en": {
-                  "day": "Friday",
-                  "title": "Task 3 v2 writing pass",
-                  "summary": "Turn the source map into cleaner report sections with cited tables.",
-                  "actions": [
-                        "Add the strongest supply-demand tables first.",
-                        "Revise product effects where data changes the story.",
-                        "Mark weak claims as gaps."
-                  ],
-                  "blocks": [
-                        [
-                              "60 min",
-                              "Write table-backed sections"
-                        ],
-                        [
-                              "30 min",
-                              "Tighten product effects"
-                        ],
-                        [
-                              "15 min",
-                              "List remaining gaps"
-                        ]
-                  ],
-                  "done": [
-                        "Task 3 has cited tables and weak spots are clearly labeled."
-                  ]
-            },
-            "zh": {
-                  "day": "\u5468\u4e94",
-                  "title": "\u4efb\u52a13 v2 \u5199\u4f5c",
-                  "summary": "\u628a\u6765\u6e90\u5730\u56fe\u53d8\u6210\u66f4\u6e05\u6670\u3001\u5e26\u5f15\u7528\u8868\u683c\u7684\u62a5\u544a\u6bb5\u843d\u3002",
-                  "actions": [
-                        "\u5148\u52a0\u5165\u6700\u6709\u8bf4\u670d\u529b\u7684\u4f9b\u9700\u8868\u3002",
-                        "\u6839\u636e\u6570\u636e\u6539\u5199\u54c1\u79cd\u5f71\u54cd\u3002",
-                        "\u628a\u8f83\u5f31\u5224\u65ad\u6807\u6210\u7f3a\u53e3\u3002"
-                  ],
-                  "blocks": [
-                        [
-                              "60\u5206\u949f",
-                              "\u5199\u6709\u8868\u683c\u652f\u6491\u7684\u6bb5\u843d"
-                        ],
-                        [
-                              "30\u5206\u949f",
-                              "\u6536\u7d27\u54c1\u79cd\u5f71\u54cd"
-                        ],
-                        [
-                              "15\u5206\u949f",
-                              "\u5217\u51fa\u5269\u4f59\u7f3a\u53e3"
-                        ]
-                  ],
-                  "done": [
-                        "\u4efb\u52a13\u6709\u5f15\u7528\u8868\u683c\uff0c\u8584\u5f31\u70b9\u4e5f\u88ab\u6e05\u695a\u6807\u51fa\u3002"
-                  ]
-            }
+        day: "Friday",
+        title: "Task 3 v2 writing pass",
+        summary: "Turn the El Nino source map into cleaner report sections with cited tables.",
+        actions: ["Add the strongest supply-demand tables first.", "Revise product effects where data changes the story.", "Mark weak claims as gaps.", "Keep metals balance notes ready for Saturday."],
+        blocks: [["60 min", "Write table-backed sections"], ["30 min", "Tighten product effects"], ["15 min", "List remaining gaps"]],
+        done: ["Task 3 has cited tables and weak spots are clearly labeled."]
       },
       6: {
-            "en": {
-                  "day": "Saturday",
-                  "title": "LP design reset",
-                  "summary": "Clean the system-build next steps after the hardware and Task 3 passes.",
-                  "actions": [
-                        "List the next LP system-build actions.",
-                        "Separate must-have from later ideas.",
-                        "Update the status board."
-                  ],
-                  "blocks": [
-                        [
-                              "30 min",
-                              "Extract next steps"
-                        ],
-                        [
-                              "30 min",
-                              "Rank must-haves"
-                        ],
-                        [
-                              "20 min",
-                              "Update status"
-                        ]
-                  ],
-                  "done": [
-                        "LP has a clean next-step list."
-                  ]
-            },
-            "zh": {
-                  "day": "\u5468\u516d",
-                  "title": "LP\u8bbe\u8ba1\u91cd\u7f6e",
-                  "summary": "\u5728\u786c\u4ef6\u68c0\u67e5\u548c\u4efb\u52a13\u63a8\u8fdb\u540e\uff0c\u6574\u7406\u7cfb\u7edf\u5efa\u8bbe\u4e0b\u4e00\u6b65\u3002",
-                  "actions": [
-                        "\u5217\u51faLP\u7cfb\u7edf\u5efa\u8bbe\u7684\u4e0b\u4e00\u6b65\u884c\u52a8\u3002",
-                        "\u533a\u5206\u5fc5\u987b\u505a\u548c\u4ee5\u540e\u518d\u505a\u7684\u60f3\u6cd5\u3002",
-                        "\u66f4\u65b0\u72b6\u6001\u677f\u3002"
-                  ],
-                  "blocks": [
-                        [
-                              "30\u5206\u949f",
-                              "\u63d0\u53d6\u4e0b\u4e00\u6b65"
-                        ],
-                        [
-                              "30\u5206\u949f",
-                              "\u6392\u5e8f\u5fc5\u987b\u9879"
-                        ],
-                        [
-                              "20\u5206\u949f",
-                              "\u66f4\u65b0\u72b6\u6001"
-                        ]
-                  ],
-                  "done": [
-                        "LP\u6709\u4e00\u4efd\u6e05\u6670\u7684\u4e0b\u4e00\u6b65\u6e05\u5355\u3002"
-                  ]
-            }
+        day: "Saturday",
+        title: "Metals balance skeleton",
+        summary: "Use the anchor sources to build the first Cu/Sn/Li2CO3 supply-demand table skeleton.",
+        actions: ["Create the table skeleton for copper, tin, and lithium carbonate.", "Add known source anchors beside each section.", "Mark every missing field instead of guessing.", "Write the next data pull needed."],
+        blocks: [["45 min", "Build table skeleton"], ["35 min", "Attach source anchors"], ["20 min", "List missing fields"]],
+        done: ["The metals table skeleton exists with sources and missing fields marked."]
       }
-};
+    };
     let selectedFocusDay = new Date().getDay();
 
     function setText(id, text) {
@@ -1361,26 +937,22 @@
       )).join("");
     }
 
-    function renderFocusDay(day = selectedFocusDay, lang = currentLang) {
+    function renderFocusDay(day = selectedFocusDay) {
       const fallbackDay = dayDetails[day] ? day : 2;
       selectedFocusDay = fallbackDay;
-      const detail = dayDetails[fallbackDay][lang] || dayDetails[fallbackDay].en;
-      const labels = lang === "zh"
-        ? { today: "\u4eca\u5929", doToday: "\u4eca\u5929\u8981\u505a", blocks: "\u5efa\u8bae\u65f6\u95f4\u5757", done: "\u5b8c\u6210\u6807\u51c6", deep: "\u6df1\u5ea6\u4efb\u52a1", next: "\u4e0b\u4e00\u6b65", checkpoint: "\u5206\u949f\u68c0\u67e5\u70b9" }
-        : { today: "Today", doToday: "Do Today", blocks: "Suggested Blocks", done: "Done When", deep: "deep task", next: "next actions", checkpoint: "min checkpoint" };
-
-      setText("focusDay", `${labels.today}: ${detail.day}`);
+      const detail = dayDetails[fallbackDay];
+      setText("focusDay", `Today: ${detail.day}`);
       setText("focusTitle", detail.title);
       setText("focusSummary", detail.summary);
-      setText("focusMetricOne", "1");
-      setText("focusMetricOneLabel", labels.deep);
+      setText("focusMetricOne", "2");
+      setText("focusMetricOneLabel", "work threads");
       setText("focusMetricTwo", String(detail.actions.length));
-      setText("focusMetricTwoLabel", labels.next);
+      setText("focusMetricTwoLabel", "next actions");
       setText("focusMetricThree", "90");
-      setText("focusMetricThreeLabel", labels.checkpoint);
-      setText("focusPanelTitle", labels.doToday);
-      setText("focusBlocksTitle", labels.blocks);
-      setText("focusDoneTitle", labels.done);
+      setText("focusMetricThreeLabel", "min checkpoint");
+      setText("focusPanelTitle", "Do Today");
+      setText("focusBlocksTitle", "Suggested Blocks");
+      setText("focusDoneTitle", "Done When");
       renderList("focusActions", detail.actions);
       renderBlocks("focusBlocks", detail.blocks);
       renderList("focusDone", detail.done);
@@ -1395,53 +967,18 @@
         if (isSelected) {
           const pill = document.createElement("span");
           pill.className = "pill green";
-          pill.textContent = labels.today.toLowerCase ? labels.today.toLowerCase() : labels.today;
+          pill.textContent = "today";
           dayName.appendChild(pill);
         }
       });
+
+      requestPageTranslation(currentLang);
     }
 
     function showToast(message) {
-      toast.textContent = currentLang === "zh" ? (translations[message] || message) : message;
+      toast.textContent = message;
       toast.classList.add("show");
       window.setTimeout(() => toast.classList.remove("show"), 1400);
-    }
-
-    function normalized(text) {
-      return text.trim().replace(/\s+/g, " ");
-    }
-
-    function applyLanguage(lang) {
-      currentLang = lang;
-      document.documentElement.lang = lang === "zh" ? "zh-Hans" : "en";
-      document.title = lang === "zh" ? translations["Weekly Agentic Planner"] : "Weekly Agentic Planner";
-
-      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-      const textNodes = [];
-      while (walker.nextNode()) textNodes.push(walker.currentNode);
-
-      textNodes.forEach((node) => {
-        const parent = node.parentElement;
-        if (!parent || ["SCRIPT", "STYLE", "TEXTAREA"].includes(parent.tagName)) return;
-        if (!originalText.has(node)) originalText.set(node, node.nodeValue);
-        const original = originalText.get(node);
-        if (lang === "en") {
-          node.nodeValue = original;
-          return;
-        }
-        const key = normalized(original);
-        if (!translations[key]) return;
-        const leading = original.match(/^\s*/)[0];
-        const trailing = original.match(/\s*$/)[0];
-        node.nodeValue = `${leading}${translations[key]}${trailing}`;
-      });
-
-      document.querySelectorAll("[data-lang]").forEach((button) => {
-        button.classList.toggle("active", button.dataset.lang === lang);
-      });
-
-      renderFocusDay(selectedFocusDay, lang);
-      try { localStorage.setItem("plannerLanguage", lang); } catch (e) {}
     }
 
     async function copyText(text) {
@@ -1449,7 +986,6 @@
         await navigator.clipboard.writeText(text);
         return;
       }
-
       const scratch = document.createElement("textarea");
       scratch.value = text;
       scratch.setAttribute("readonly", "");
@@ -1460,6 +996,35 @@
       document.execCommand("copy");
       document.body.removeChild(scratch);
     }
+
+    function getTranslateSelect() {
+      return document.querySelector(".goog-te-combo");
+    }
+
+    function requestPageTranslation(lang) {
+      currentLang = lang;
+      document.documentElement.lang = lang === "zh" ? "zh-Hans" : "en";
+      document.querySelectorAll("[data-lang]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.lang === lang);
+      });
+      try { localStorage.setItem("plannerLanguage", lang); } catch (e) {}
+
+      const select = getTranslateSelect();
+      if (!select) return;
+      const target = lang === "zh" ? "zh-CN" : "en";
+      if (select.value === target) return;
+      select.value = target;
+      select.dispatchEvent(new Event("change"));
+    }
+
+    window.googleTranslateElementInit = function () {
+      new google.translate.TranslateElement({
+        pageLanguage: "en",
+        includedLanguages: "en,zh-CN",
+        autoDisplay: false
+      }, "google_translate_element");
+      window.setTimeout(() => requestPageTranslation(currentLang), 500);
+    };
 
     document.querySelectorAll("[data-copy]").forEach((button) => {
       button.addEventListener("click", async () => {
@@ -1478,18 +1043,21 @@
     });
 
     document.querySelectorAll("[data-lang]").forEach((button) => {
-      button.addEventListener("click", () => applyLanguage(button.dataset.lang));
+      button.addEventListener("click", () => requestPageTranslation(button.dataset.lang));
     });
 
     document.querySelectorAll("[data-focus-day]").forEach((card) => {
-      card.addEventListener("click", () => renderFocusDay(Number(card.dataset.focusDay), currentLang));
+      card.addEventListener("click", () => renderFocusDay(Number(card.dataset.focusDay)));
     });
 
     try {
+      currentLang = localStorage.getItem("plannerLanguage") || "en";
       selectedFocusDay = dayDetails[selectedFocusDay] ? selectedFocusDay : 2;
-      applyLanguage(localStorage.getItem("plannerLanguage") || "en");
+      renderFocusDay(selectedFocusDay);
+      requestPageTranslation(currentLang);
     } catch (e) {
-      applyLanguage("en");
+      currentLang = "en";
+      renderFocusDay(2);
     }
 
     // Auto-refresh so newly auto-added WeChat tasks appear. Preserves scroll; pauses when the tab is hidden.
@@ -1505,6 +1073,7 @@
       }, 60000);
     })();
   </script>
+  <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
 
