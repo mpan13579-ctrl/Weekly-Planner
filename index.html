@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Weekly Agentic Planner</title>
-  <meta name="planner-build" content="dark-mode-toggle-1781711200">
+  <meta name="planner-build" content="versioned-language-theme-1781711600">
   <script>
     (function () {
       try {
@@ -711,8 +711,8 @@
           <button class="notranslate" translate="no" data-theme-choice="dark" type="button">Dark</button>
         </div>
         <div class="lang-toggle notranslate" translate="no" aria-label="Language selector">
-          <a class="active notranslate" translate="no" data-lang="en" id="englishLink" href="https://mpan13579-ctrl.github.io/Weekly-Planner/" target="_top">EN</a>
-          <a class="notranslate" translate="no" data-lang="zh" id="chineseLink" href="https://translate.google.com/translate?sl=en&tl=zh-CN&u=https%3A%2F%2Fmpan13579-ctrl.github.io%2FWeekly-Planner%2F" target="_top">&#31616;&#20013;</a>
+          <a class="active notranslate" translate="no" data-lang="en" id="englishLink" href="https://mpan13579-ctrl.github.io/Weekly-Planner/?v=versioned-language-theme-1781711600" target="_top">EN</a>
+          <a class="notranslate" translate="no" data-lang="zh" id="chineseLink" href="https://translate.google.com/translate?sl=en&tl=zh-CN&u=https%3A%2F%2Fmpan13579-ctrl.github.io%2FWeekly-Planner%2F%3Fv%3Dversioned-language-theme-1781711600" target="_top">&#31616;&#20013;</a>
         </div>
         <button class="btn primary" data-scroll="#today">Show today</button>
       </div>
@@ -1093,15 +1093,16 @@
 
     function configureLanguageLinks() {
       const canonical = "https://mpan13579-ctrl.github.io/Weekly-Planner/";
+      const sourceUrl = canonical + "?v=versioned-language-theme-1781711600";
       const englishLink = document.getElementById("englishLink");
       const chineseLink = document.getElementById("chineseLink");
-      const translatedUrl = "https://translate.google.com/translate?sl=en&tl=zh-CN&u=" + encodeURIComponent(canonical);
+      const translatedUrl = "https://translate.google.com/translate?sl=en&tl=zh-CN&u=" + encodeURIComponent(sourceUrl);
       const translatedContext = location.hostname.includes("translate.goog") || location.hostname.includes("translate.google") || location.href.includes("tl=zh-CN") || location.href.includes("_x_tr_tl=zh-CN");
       const activeLang = translatedContext ? "zh" : "en";
       document.querySelectorAll("[data-lang]").forEach((link) => {
         link.classList.toggle("active", link.dataset.lang === activeLang);
       });
-      if (englishLink) englishLink.href = canonical;
+      if (englishLink) englishLink.href = sourceUrl;
       if (chineseLink) {
         chineseLink.href = translatedUrl;
         chineseLink.addEventListener("click", () => {
