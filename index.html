@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Weekly Agentic Planner</title>
-  <meta name="planner-build" content="signal-wording-1781790900">
+  <meta name="planner-build" content="top-card-two-panels-1781791800">
   <script>
     (function () {
       try {
@@ -723,8 +723,8 @@
           <button class="notranslate" translate="no" data-theme-choice="dark" type="button">Dark</button>
         </div>
         <div class="lang-toggle notranslate" translate="no" aria-label="Language selector">
-          <a class="active notranslate" translate="no" data-lang="en" id="englishLink" href="https://mpan13579-ctrl.github.io/Weekly-Planner/?v=signal-wording-1781790900" target="_top">EN</a>
-          <a class="notranslate" translate="no" data-lang="zh" id="chineseLink" href="https://translate.google.com/translate?sl=en&tl=zh-CN&u=https%3A%2F%2Fmpan13579-ctrl.github.io%2FWeekly-Planner%2F%3Fv%3Dsignal-wording-1781790900" target="_top">&#31616;&#20013;</a>
+          <a class="active notranslate" translate="no" data-lang="en" id="englishLink" href="https://mpan13579-ctrl.github.io/Weekly-Planner/?v=top-card-two-panels-1781791800" target="_top">EN</a>
+          <a class="notranslate" translate="no" data-lang="zh" id="chineseLink" href="https://translate.google.com/translate?sl=en&tl=zh-CN&u=https%3A%2F%2Fmpan13579-ctrl.github.io%2FWeekly-Planner%2F%3Fv%3Dtop-card-two-panels-1781791800" target="_top">&#31616;&#20013;</a>
         </div>
         <button class="btn primary" data-scroll="#today">Show today</button>
       </div>
@@ -739,13 +739,9 @@
               <h2 id="focusTitle">PC order + El Nino source list</h2>
               <p class="subtle" id="focusSummary">Capture the computer specs, then start the El Nino data-source list so the research work has a clean base.</p>
             </div>
-            <div class="mini-grid focus-metrics">
-              <div class="metric"><b id="focusMetricOne">3</b><span id="focusMetricOneLabel">main goals</span></div>
-              <div class="metric"><b id="focusMetricTwo">1</b><span id="focusMetricTwoLabel">quick tasks</span></div>
-            </div>
           </div>
           <div class="focus-panel">
-            <h3 id="focusPanelTitle">Do Today</h3>
+            <h3 id="focusPanelTitle">Quick Tasks</h3>
             <ul id="focusActions">
               <li>Capture CPU, RAM, GPU, storage, OS, and machine model.</li>
               <li>Write the PC spec summary in one clean note.</li>
@@ -754,9 +750,11 @@
             </ul>
           </div>
           <div class="focus-panel">
-            <h3 id="focusDoneTitle">Done When</h3>
-            <ul id="focusDone">
-              <li>The PC order is documented and the El Nino source-gap list has started.</li>
+            <h3 id="focusGoalsTitle">Long-Term Main Goals</h3>
+            <ul id="focusGoals">
+              <li>Complete PC and Wi-Fi material orders.</li>
+              <li>Move El Nino agriculture research forward.</li>
+              <li>Build the metal product signal map.</li>
             </ul>
           </div>
         </div>
@@ -951,6 +949,12 @@
 
   <script>
     const toast = document.querySelector("#toast");
+    const longTermGoals = [
+      "Complete PC and Wi-Fi material orders.",
+      "Move El Nino agriculture research forward.",
+      "Build the metal product signal map."
+    ];
+
     const dayDetails = {
       0: {
         day: "Sunday",
@@ -1037,14 +1041,10 @@
       setText("focusDay", `Today: ${detail.day}`);
       setText("focusTitle", detail.title);
       setText("focusSummary", detail.summary);
-      setText("focusMetricOne", "3");
-      setText("focusMetricOneLabel", "main goals");
-      setText("focusMetricTwo", "1");
-      setText("focusMetricTwoLabel", "quick tasks");
-      setText("focusPanelTitle", "Do Today");
-      setText("focusDoneTitle", "Done When");
+      setText("focusPanelTitle", "Quick Tasks");
+      setText("focusGoalsTitle", "Long-Term Main Goals");
       renderList("focusActions", detail.actions);
-      renderList("focusDone", detail.done);
+      renderList("focusGoals", detail.goals || longTermGoals);
 
       document.querySelectorAll("[data-focus-day]").forEach((card) => {
         const isSelected = Number(card.dataset.focusDay) === fallbackDay;
@@ -1087,7 +1087,7 @@
 
     function configureLanguageLinks() {
       const canonical = "https://mpan13579-ctrl.github.io/Weekly-Planner/";
-      const sourceUrl = canonical + "?v=signal-wording-1781790900";
+      const sourceUrl = canonical + "?v=top-card-two-panels-1781791800";
       const englishLink = document.getElementById("englishLink");
       const chineseLink = document.getElementById("chineseLink");
       const translatedUrl = "https://translate.google.com/translate?sl=en&tl=zh-CN&u=" + encodeURIComponent(sourceUrl);
