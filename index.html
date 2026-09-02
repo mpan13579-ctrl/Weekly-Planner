@@ -925,6 +925,7 @@
   
   
   
+  
 
 <!-- INTAKE:START -->
     <section class="section" id="todayTasks">
@@ -952,7 +953,10 @@
       </div>
       <div class="card">
         <!-- TASKS-WEEKLY:START -->
-<p class="subtle">No multi-day tasks yet &mdash; longer things you text (e.g. &ldquo;finish the Task 2 metals report&rdquo;) land here.</p>
+<div class="status-row" style="grid-template-columns:1fr auto auto;gap:10px;">
+  <div><strong>Fix LP1 Open WebUI and LP4 audit probe configs</strong><p class="subtle" style="margin-top:2px;">1) Update Open WebUI API endpoint from :18800 to http://100.102.36.40:18801/v1 with Bearer auth (get key from Gene). 2) Add new healthz probe curl command to lp &middot; from Gene · LP任务 &middot; 9/2/2026, 12:05:43 PM</p></div>
+  <span class="pill red">high</span><span class="pill blue">this week</span>
+</div>
         <!-- TASKS-WEEKLY:END -->
       </div>
     </section>
